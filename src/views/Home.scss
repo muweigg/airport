@@ -1,0 +1,437 @@
+.home {
+  position: relative;
+  padding-bottom: 50px;
+
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 61px;
+    background: transparent url(../assets/images/top-bg.png) center top/auto 100% no-repeat;
+    color: #3371fd;
+    font-size: 26px;
+    font-weight: bold;
+  }
+
+  .logo {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    color: #3371fd;
+    font-size: 30px;
+  }
+
+  .date-time {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-end;
+
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    font-size: 18px;
+    color: #3371fd;
+    line-height: 1.5;
+  }
+
+  > header {
+    margin: 35px 30px 0;
+    height: 215px;
+    background: transparent url(../assets/images/header-total-bg.png) center top/auto 100% no-repeat;
+    color: #fff;
+
+    .flaunt {
+      display: flex;
+      align-items: center;
+
+      height: 70px;
+      padding: 48px 0 0 30px;
+
+      > strong {
+        font-size: 28px;
+        margin-right: 10px;
+      }
+
+      .num {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 60px;
+        height: 70px;
+        background-color: rgba(#3371fd, .2);
+        border: 1px solid #3371fd;
+        font-size: 36px;
+        margin: 0 10px;
+      }
+
+      .wrap {
+        display: flex;
+        flex-flow: column nowrap;
+        margin-left: 10px;
+
+        strong {
+          font-size: 26px;
+          margin-bottom: 10px;
+        }
+
+        span {
+          font-size: 18px;
+          color: #04aafe;
+        }
+      }
+    }
+
+    .count {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-top: 35px;
+      font-size: 20px;
+
+      div {
+        display: flex;
+        align-items: center;
+
+        margin: 0 25px;
+
+        img {
+          max-width: 22px;
+          max-height: 21px;
+          margin-right: 10px;
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+
+  // 场景
+  .scene {
+    height: 570px;
+    position: relative;
+
+    .switch-scene {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-top: 35px;
+
+      strong {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 144px;
+        height: 49px;
+        background: transparent url(../assets/images/btn-switch.png) center top/100% no-repeat;
+        font-size: 23px;
+        color: #fff;
+        margin: 0 8px;
+        user-select: none;
+
+        &.active {
+          background: transparent url(../assets/images/btn-switch-active.png) center top/100% no-repeat;
+        }
+      }
+    }
+  }
+
+  .hat {
+    margin: 0 40px;
+
+    &:before {
+      content: '';
+      display: flex;
+      height: 39px;
+      background: transparent url(../assets/images/split-line-top.png) center top/100% auto no-repeat;
+    }
+  }
+
+  .tail {
+    margin: 0 40px;
+
+    &:after {
+      content: '';
+      display: flex;
+      height: 30px;
+      background: transparent url(../assets/images/split-line.png) center bottom/100% auto no-repeat;
+    }
+  }
+
+  .block {
+    margin: 40px 40px 0;
+
+    h3 {
+      display: flex;
+      align-items: center;
+
+      font-size: 34px;
+      color: #fff;
+      position: relative;
+
+      &:before {
+        content: '';
+        display: flex;
+        width: 5px;
+        height: 32px;
+        background-color: #04aafe;
+        margin-right: 25px;
+      }
+
+      div {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: flex-end;
+
+        position: absolute;
+        top: 10px;
+        right: 0;
+        font-size: 24px;
+
+        strong {
+
+          &:nth-of-type(1) {
+            color: #04aafe;
+          }
+
+          &:nth-of-type(2) {
+            color: #ffb743;
+            margin-top: 25px;
+          }
+
+          span {
+            color: #fff;
+            font-weight: normal;
+          }
+        }
+      }
+    }
+
+    &:after {
+      margin-top: 30px;
+    }
+  }
+
+  // 订座
+  .reservation {
+
+    ul {
+      padding-left: 30px;
+
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        font-size: 26px;
+        color: #fff;
+        margin-top: 45px;
+
+        div {
+          display: flex;
+          align-items: center;
+
+          img {
+            width: 34px;
+            height: 33px;
+            margin-right: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  // 值机
+  .check-in {
+
+    ul {
+      margin-left: 30px;
+
+      li {
+        display: flex;
+        align-items: center;
+
+        font-size: 26px;
+        color: #fff;
+        margin-top: 30px;
+
+        &.special {
+
+          &, .progress-rate {
+            color: #ffb743 !important;
+          }
+        }
+
+        &.normal {
+          &, .progress-rate {
+            color: #29de54 !important;
+          }
+        }
+
+        div {
+
+          &:nth-of-type(1) {
+            flex: none;
+            width: 130px;
+          }
+
+          &:nth-of-type(2) {
+            flex: 1 0 0;
+            margin: 0 40px;
+
+            .progress-rate {
+              width: 0;
+              height: 12px;
+              background-color: currentColor;
+              color: #04aafe;
+            }
+          }
+
+          &:nth-of-type(3) {
+            flex: none;
+            width: 100px;
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+
+  // 安检
+  .security-check {
+
+    &:after {
+      content: '';
+      display: flex;
+      height: 20px;
+      background: transparent url(../assets/images/split-line-bottom.png) center top/auto 100% no-repeat;
+    }
+  }
+
+  .placeholder-chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 440px;
+    color: #fff;
+    font-size: 48px;
+  }
+
+  // 登机
+  .boarding {
+
+    .placeholder-chart {
+      height: 280px;
+    }
+  }
+
+  // 行李
+  .baggage {
+
+    > div {
+      display: flex;
+
+      height: 128px;
+      padding-left: 30px;
+      margin-top: 55px;
+
+      > div:nth-of-type(1) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 90px;
+        font-size: 30px;
+        font-weight: bold;
+        color: #04aafe;
+        border: 1px solid #04aafe;
+      }
+
+      .wrap {
+        flex: 1 0 0;
+        display: flex;
+        flex-flow: column nowrap;
+        //align-items: center;
+        justify-content: space-between;
+
+        font-size: 26px;
+        color: #fff;
+
+        > div {
+          display: flex;
+          align-items: center;
+
+          > div {
+
+            &:nth-of-type(1) {
+              width: 80px;
+              margin-left: 20px;
+              font-size: 0;
+              text-align: justify;
+
+              > span {
+                font-size: 26px;
+              }
+
+              &:after {
+                content: '';
+                display: inline-block;
+                width: 100%;
+                height: 0;
+              }
+            }
+
+            &:nth-of-type(2) {
+              width: 214px;
+              height: 40px;
+              background-color: #1b3e8d;
+              position: relative;
+              margin: 0 20px;
+
+              > span {
+                display: flex;
+                width: 16px;
+                height: 42px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #04aafe;
+              }
+            }
+          }
+        }
+      }
+
+    }
+
+    > div:nth-of-type(2) {
+
+      > div:nth-of-type(1) {
+        color: #ffb743;
+        border: 1px solid #ffb743;
+      }
+
+      .wrap {
+
+        > div {
+
+          > div {
+
+            &:nth-of-type(2) {
+
+              > span {
+                transform: translate(-50%, -50%);
+                background-color: #ffb743;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

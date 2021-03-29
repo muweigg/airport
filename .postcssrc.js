@@ -11,7 +11,7 @@ module.exports = {
     //   selectorBlackList: ['.ignore', '.hairlines', /\.van-loading__text/, /\.van-(?!loading)/]
     // },
     'postcss-pxtorem': {
-      rootValue: 108,
+      rootValue: 75,
 			unitPrecision: 6,
 			mediaQuery: true,
       propList: [

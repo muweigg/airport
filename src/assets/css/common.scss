@@ -1,7 +1,7 @@
 @import '~normalize.css';
 
-$vw_base: 1080;
-$vw_fontsize: 108;
+$vw_base: 750;
+$vw_fontsize: 75;
 
 @media screen and (orientation: portrait) {
   html {
@@ -32,5 +32,28 @@ $vw_fontsize: 108;
       transform: rotate(-90deg) translateX(-100%);
       transform-origin: 0 0;
     }
+  }
+}
+
+body {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  background-color: #030b1d;
+
+  &:before {
+    content: '';
+    background: #030b1d url(../images/bg.png) center top/100% auto no-repeat;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3960px;
+  }
+
+  * {
+    padding: 0;
+    margin: 0;
   }
 }
