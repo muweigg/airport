@@ -132,7 +132,29 @@
 
     <div class="block boarding tail">
       <h3>登机</h3>
-      <div class="placeholder-chart">统计图表</div>
+      <div class="statistics">
+        <div>
+          <strong>16396</strong>
+          <div class="wrap-limit">
+            <img src="@/assets/images/check-in/1.png" alt="">
+          </div>
+          <div>待登机</div>
+        </div>
+        <div>
+          <strong>16396</strong>
+          <div class="wrap-limit">
+            <img src="@/assets/images/check-in/2.png" alt="">
+          </div>
+          <div>已登机</div>
+        </div>
+        <div>
+          <strong>16396</strong>
+          <div class="wrap-limit">
+            <img src="@/assets/images/check-in/3.png" alt="">
+          </div>
+          <div>待飞</div>
+        </div>
+      </div>
     </div>
 
     <div class="block baggage tail">
