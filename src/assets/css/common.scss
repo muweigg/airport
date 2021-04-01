@@ -9,7 +9,7 @@ $vw_fontsize: 75;
 
     &, body {
       width: 100vw;
-      height: 100vh;
+      height: var(--vh, 100vh);
     }
 
     body {
@@ -21,12 +21,12 @@ $vw_fontsize: 75;
 
 @media screen and (orientation: landscape) {
   html {
-    font-size: ($vw_fontsize / $vw_base) * 100vh;
-    height: 100vh;
+    font-size: calc(#{$vw_fontsize / $vw_base} * var(--vh, 100vh));
+    height: var(--vh, 100vh);
     overflow-y: hidden;
 
     body {
-      width: 100vh;
+      width: var(--vh, 100vh);
       height: 100vw;
       overflow-x: auto;
       transform: rotate(-90deg) translateX(-100%);
