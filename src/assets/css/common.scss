@@ -3,6 +3,10 @@
 $vw_base: 750;
 $vw_fontsize: 75;
 
+html, body {
+  overflow: hidden;
+}
+
 @media screen and (orientation: portrait) {
   html {
     font-size: ($vw_fontsize / $vw_base) * 100vw;
@@ -42,15 +46,15 @@ body {
   position: relative;
   background-color: #030b1d;
 
-  &:before {
-    content: '';
-    background: #030b1d url(../images/bg.jpg) center top/100% auto repeat-y;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3960px;
-  }
+  //&:before {
+  //  content: '';
+  //  background: #030b1d url(../images/bg.jpg) center top/100% auto repeat-y;
+  //  position: absolute;
+  //  top: 0;
+  //  left: 0;
+  //  right: 0;
+  //  //height: 3960px;
+  //}
 
   * {
     -webkit-tap-highlight-color: rgba(#000, 0);
