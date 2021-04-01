@@ -3,10 +3,6 @@
 $vw_base: 750;
 $vw_fontsize: 75;
 
-html, body {
-  overflow: hidden;
-}
-
 @media screen and (orientation: portrait) {
   html {
     font-size: ($vw_fontsize / $vw_base) * 100vw;
