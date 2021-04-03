@@ -198,15 +198,19 @@
 
       <div class="content">
 
-        <div class="circle">
-          待进港人数
-          <strong>3333</strong>
-        </div>
+        <progress-circle>
+          <div class="circle c1">
+            待进港人数
+            <strong>3333</strong>
+          </div>
+        </progress-circle>
 
-        <div class="circle">
-          已进港人数
-          <strong>6666</strong>
-        </div>
+        <progress-circle>
+          <div class="circle c2">
+            已进港人数
+            <strong>6666</strong>
+          </div>
+        </progress-circle>
 
       </div>
 
@@ -221,9 +225,11 @@
 <script>
 import {format} from "date-fns"
 import {interval} from "rxjs"
+import ProgressCircle from '@/components/progress-circle.vue';
 
 export default {
   name: 'Home',
+  components: {ProgressCircle},
   data () {
     return {
       date: format(new Date(), 'yyyy-MM-dd'),
