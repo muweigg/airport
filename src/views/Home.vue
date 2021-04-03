@@ -196,6 +196,20 @@
     <div class="block inbound tail">
       <h3>进港</h3>
 
+      <div class="content">
+
+        <div class="circle">
+          待进港人数
+          <strong>3333</strong>
+        </div>
+
+        <div class="circle">
+          已进港人数
+          <strong>6666</strong>
+        </div>
+
+      </div>
+
     </div>
 
     <footer>
