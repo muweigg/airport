@@ -125,10 +125,10 @@
           <strong>排队人数：<span>0</span></strong>
         </div>
       </h3>
-      <div class="placeholder-chart">统计图表</div>
+      <div class="statistics" ref="securityCheck"></div>
     </div>
 
-    <div class="hat tail"></div>
+    <div class="hat tail m2"></div>
 
     <div class="block boarding tail">
       <h3>登机</h3>
@@ -223,14 +223,15 @@
 </template>
 
 <script>
-import {format} from "date-fns"
-import {interval} from "rxjs"
+import * as echarts from 'echarts';
+import {format} from "date-fns";
+import {interval} from "rxjs";
 import ProgressCircle from '@/components/progress-circle.vue';
 
 export default {
   name: 'Home',
   components: {ProgressCircle},
-  data () {
+  data() {
     return {
       date: format(new Date(), 'yyyy-MM-dd'),
       time: format(new Date(), 'HH:mm:ss'),
@@ -240,6 +241,60 @@ export default {
   mounted() {
     interval(1000).subscribe(
         () => this.time = format(new Date(), 'HH:mm:ss'));
+
+    const option = {
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        axisLine: {show: false},
+        axisTick: {show: false},
+        axisLabel: {
+          textStyle: {color: '#ffffff'},
+        },
+        data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      },
+      yAxis: {
+        type: 'value',
+        splitLine: {show: false},
+        fontSize: 24,
+        axisLabel: {
+          textStyle: {color: '#ffffff'},
+        },
+      },
+      grid: {
+        top: '15%',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        containLabel: true
+      },
+      series: [{
+        data: [2820, 3932, 5000, 4401, 3934, 2890, 3330, 2320, 4220, 4900, 4455],
+        type: 'line',
+        smooth: true,
+        lineStyle: {
+          color: '#069dec',
+          width: 1,
+        },
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            offset: 0,
+            color: '#04aafe'
+          }, {
+            offset: 1,
+            color: 'transparent'
+          }]),
+        },
+        areaStyle: {}
+      }]
+    };
+
+    const myChart = echarts.init(this.$refs.securityCheck);
+
+    myChart.setOption(option);
+
+    setTimeout(() => myChart.resize(), 2000)
+    // #04aafe
   }
 }
 </script>

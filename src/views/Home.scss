@@ -306,22 +306,27 @@
   // 安检
   .security-check {
 
+    h3 {
+
+      div {
+        z-index: 1;
+      }
+    }
+
     &:after {
       content: '';
       display: flex;
       height: 20px;
       background: transparent url(../assets/images/split-line-bottom.png) center top/auto 100% no-repeat;
     }
+
+    .statistics {
+      height: 430px;
+    }
   }
 
-  .placeholder-chart {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    height: 440px;
-    color: #fff;
-    font-size: 48px;
+  .m2 {
+    margin-top: 70px;
   }
 
   // 登机
