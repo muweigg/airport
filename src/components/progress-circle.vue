@@ -1,13 +1,107 @@
 <template>
-  <div class="progress-circle">
+  <div class="progress-circle"
+       :style="`
+         width: ${unitConvert(size)}${unit};
+         height: ${unitConvert(size)}${unit}
+       `">
+    <svg viewBox="0 0 100 100">
+      <path d="
+        M 50 50
+        m 0 -47
+        a 47 47 0 1 1 0 94
+        a 47 47 0 1 1 0 -94
+        " :stroke="color[1]"></path>
+      <path d="
+        M 50 50
+        m 0 -47
+        a 47 47 0 1 1 0 94
+        a 47 47 0 1 1 0 -94
+        " :stroke="color[0]" :style="`stroke-dasharray: ${_percentage}px, 295.31px;`"></path>
+    </svg>
     <slot></slot>
   </div>
 </template>
 
 <script>
+import {screen} from '@/subscribes';
+
 export default {
-name: "progress-circle"
+  name: "progress-circle",
+  props: {
+    size: {
+      type: Number,
+      default: 3.2
+    },
+    unit: {
+      type: String,
+      default: 'rem'
+    },
+    viewport: {
+      type: Number,
+      default: 75
+    },
+    color: {
+      type: [String, Array],
+      default: () => ['transparent', 'transparent']
+    },
+    percentage: {
+      type: Number,
+      default: 0
+    }
+  },
+  data() {
+    return {}
+  },
+  computed: {
+    _percentage: {
+      get() {
+        return this.percentage * Math.pow(10, -2) * 295.31;
+      }
+    }
+  },
+  mounted() {
+    screen.subscribe(isPortrait => console.log(isPortrait));
+  },
+  methods: {
+    unitConvert(value) {
+      if (this.unit === 'vw') {
+        value = value / this.viewport * 100
+      }
+      return value;
+    }
+  }
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.progress-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  width: 240px;
+  height: 240px;
+
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    path {
+      fill: none;
+      stroke-dashoffset: 0;
+      stroke-dasharray: 295.31px, 295.31px;
+      stroke-width: 0.0533333rem;
+
+      &:last-child {
+        stroke-dasharray: 0, 295.31px;
+        stroke-linecap: round;
+        transition: stroke-dasharray 0.6s ease 0s, stroke 0.6s ease 0s;
+      }
+    }
+  }
+}
+</style>

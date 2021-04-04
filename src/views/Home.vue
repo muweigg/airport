@@ -198,14 +198,14 @@
 
       <div class="content">
 
-        <progress-circle>
+        <progress-circle :percentage="35" :color="['#04aafe', '#033b61']">
           <div class="circle c1">
             待进港人数
             <strong>3333</strong>
           </div>
         </progress-circle>
 
-        <progress-circle>
+        <progress-circle :percentage="35" :color="['#ffb743', '#352d25']">
           <div class="circle c2">
             已进港人数
             <strong>6666</strong>
