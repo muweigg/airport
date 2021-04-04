@@ -227,6 +227,7 @@ import * as echarts from 'echarts';
 import {format} from "date-fns";
 import {interval} from "rxjs";
 import ProgressCircle from '@/components/progress-circle.vue';
+import {screen} from "../subscribes";
 
 export default {
   name: 'Home',
@@ -263,8 +264,8 @@ export default {
       },
       grid: {
         top: '15%',
-        left: 0,
-        right: 0,
+        left: '5%',
+        right: '5%',
         bottom: 0,
         containLabel: true
       },
@@ -288,13 +289,10 @@ export default {
         areaStyle: {}
       }]
     };
-
     const myChart = echarts.init(this.$refs.securityCheck);
-
     myChart.setOption(option);
 
-    setTimeout(() => myChart.resize(), 2000)
-    // #04aafe
+    window.addEventListener('resize', () => myChart.resize());
   }
 }
 </script>
