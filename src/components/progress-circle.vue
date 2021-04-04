@@ -23,8 +23,6 @@
 </template>
 
 <script>
-import {screen} from '@/subscribes';
-
 export default {
   name: "progress-circle",
   props: {
@@ -58,9 +56,6 @@ export default {
         return this.percentage * Math.pow(10, -2) * 295.31;
       }
     }
-  },
-  mounted() {
-    screen.subscribe(isPortrait => console.log(isPortrait));
   },
   methods: {
     unitConvert(value) {
