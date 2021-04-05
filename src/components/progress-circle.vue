@@ -1,9 +1,5 @@
 <template>
-  <div class="progress-circle"
-       :style="`
-         width: ${unitConvert(size)}${unit};
-         height: ${unitConvert(size)}${unit}
-       `">
+  <div class="progress-circle">
     <svg viewBox="0 0 100 100">
       <path d="
         M 50 50
@@ -28,7 +24,7 @@ export default {
   props: {
     size: {
       type: Number,
-      default: 3.2
+      default: 240
     },
     unit: {
       type: String,
@@ -60,7 +56,10 @@ export default {
   methods: {
     unitConvert(value) {
       if (this.unit === 'vw') {
-        value = value / this.viewport * 100
+        value = value / (this.viewport * 10)
+      }
+      if (this.unit === 'rem') {
+        value = value / this.viewport
       }
       return value;
     }
