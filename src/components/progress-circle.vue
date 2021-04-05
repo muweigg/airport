@@ -85,13 +85,16 @@ export default {
     right: 0;
     bottom: 0;
 
+    path, .ignore {
+      stroke-dasharray: 295.31px, 295.31px;
+    }
+
     path {
       fill: none;
       stroke-dashoffset: 0;
-      stroke-dasharray: 295.31px, 295.31px;
-      stroke-width: 0.0533333rem;
+      stroke-width: 3px;
 
-      &:last-child {
+      &:last-child, .ignore {
         stroke-dasharray: 0, 295.31px;
         stroke-linecap: round;
         transition: stroke-dasharray 0.6s ease 0s, stroke 0.6s ease 0s;
