@@ -38,6 +38,14 @@
         <strong :class="{active: scene == 2}" @click="scene = 2">T2</strong>
         <strong :class="{active: scene == 3}" @click="scene = 3">T3</strong>
       </div>
+
+      <div class="overview">
+        <header>
+          <strong>重庆江北国际机场</strong>
+          CHONGQING Airport Group Co.,Itd
+        </header>
+        <img src="@/assets/images/overview.png" alt="">
+      </div>
     </div>
 
     <div class="hat tail"></div>
