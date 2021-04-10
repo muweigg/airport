@@ -10,24 +10,24 @@
     <header>
       <div class="flaunt">
         <strong>旅客总量</strong>
-        <div class="num"><strong>0</strong></div>
-        <div class="num"><strong>0</strong></div>
-        <div class="num"><strong>0</strong></div>
-        <div class="num"><strong>0</strong></div>
+        <div class="num"><strong>{{ accumulative.total[0] }}</strong></div>
+        <div class="num"><strong>{{ accumulative.total[1] }}</strong></div>
+        <div class="num"><strong>{{ accumulative.total[2] }}</strong></div>
+        <div class="num"><strong>{{ accumulative.total[3] }}</strong></div>
         <div class="wrap">
           <strong>万人</strong>
-          <span>截至日：2021-03-03</span>
+          <span>截至日：{{ date }}</span>
         </div>
       </div>
 
       <div class="count">
         <div>
           <img src="@/assets/images/icons/outbound.png" alt="">
-          累计出港 241万人
+          累计出港 {{ accumulative.outbound }} 万人
         </div>
         <div>
           <img src="@/assets/images/icons/inbound.png" alt="">
-          累计进港 241万人
+          累计进港 {{ accumulative.inbound }} 万人
         </div>
       </div>
     </header>
@@ -77,14 +77,14 @@
             <img src="@/assets/images/icons/outbound-2.png" alt="">
             预计明日离港人数
           </div>
-          <div>44567</div>
+          <div>{{ estimate.outbound }}</div>
         </li>
         <li>
           <div>
             <img src="@/assets/images/icons/inbound-2.png" alt="">
             预计明日进港人数
           </div>
-          <div>44567</div>
+          <div>{{ estimate.inbound }}</div>
         </li>
       </ul>
     </div>
@@ -92,7 +92,7 @@
     <div class="block check-in tail">
       <h3>
         值机
-        <div><strong>自助率：75.99%</strong></div>
+        <div><strong>自助率：{{ checkIn.cussRate }}%</strong></div>
       </h3>
       <ul>
         <li>
@@ -251,10 +251,14 @@
 
 <script>
 import * as echarts from 'echarts';
-import {format} from "date-fns";
-import {interval} from "rxjs";
+import {format, addDays} from "date-fns";
+import {timer, interval, defer} from "rxjs";
+import {concatMap} from 'rxjs/operators';
+import {TweenLite, Expo} from 'gsap';
 import ProgressCircle from '@/components/progress-circle.vue';
 import Swiper from 'swiper';
+import axios from '@/js/axios';
+import API_URL from "@/js/API_URL";
 import config from '@/js/echartsConfig';
 
 export default {
@@ -267,14 +271,36 @@ export default {
       scene: 0,
       swiper: null,
       controller: null,
+      subscribeable: [],
+      subscriptions: [],
+      // 累计 总/进/出 港人数（万）
+      accumulative: {
+        total: [0, 0, 0, 0],
+        inbound: 0,
+        outbound: 0
+      },
+      // 预计 进/出 港人数
+      estimate: {
+        inbound: 0,
+        outbound: 0
+      },
+      checkIn: {
+        cussRate: 0
+      }
+
     }
   },
   mounted() {
     interval(1000).subscribe(
-        () => this.time = format(new Date(), 'HH:mm:ss'));
+        () => {
+          this.date = format(new Date(), 'yyyy-MM-dd');
+          this.time = format(new Date(), 'HH:mm:ss');
+        });
 
     this.initSwiper();
     this.initEcharts();
+    this.initAllRequestTimer();
+    this.subscribeAllRequestTimer();
   },
   methods: {
     initSwiper() {
@@ -309,6 +335,125 @@ export default {
       this.controller.slideTo(2 - idx);
       this.swiper.slideTo(idx);
     },
+    initAllRequestTimer() {
+      this.subscribeable = [
+        // 顶部统计
+        this.requestTimer(API_URL.PASSENGER_NUM_IN_YEAR),
+        // 订座
+        this.requestTimer(API_URL.BOOKED_NUM, format(addDays(Date.now(), 1), 'yyyy-MM-dd')),
+        // 值机
+        // 自助率
+        this.requestTimer(API_URL.CUSS_RATE),
+      ];
+    },
+    subscribeAllRequestTimer() {
+      for (let i = 0; i < this.subscribeable.length; i++) {
+        this.subscriptions.push(this.subscribeable[i].subscribe(this[`responseHandler${i + 1}`]));
+      }
+    },
+    unsubscribeAllRequestTimer() {
+      for (let o of this.subscriptions) {
+        o.unsubscribe();
+      }
+      this.subscriptions = [];
+    },
+    // 机场累计接待旅客人数
+    responseHandler1(data) {
+      const properties = ['inbound', 'outbound'];
+      if (parseInt(data.retCode) === 0) {
+        const result = data.retJSON.result[0];
+
+        const tmp = {
+          total: parseInt(this.accumulative.total.join(''))
+        };
+
+        TweenLite.to(tmp, 2, {
+          total: parseInt(result.total_passengernum) / 10000,
+          snap: 'total',
+          ease: Expo.easeOut,
+          onUpdate: () => {
+            this.accumulative.total = String(tmp.total).padStart(4, '0').split('');
+          }
+        });
+
+        TweenLite.to(this.accumulative, 2, {
+          outbound: parseInt(result.departure_passengernum) / 10000,
+          snap: 'outbound',
+          ease: Expo.easeOut
+        });
+
+        TweenLite.to(this.accumulative, 2, {
+          inbound: parseInt(result.arrive_passengernum) / 10000,
+          snap: 'inbound',
+          ease: Expo.easeOut
+        });
+      }
+    },
+    // 订座 - 预计明日 进/离 港人数
+    responseHandler2(data) {
+      const properties = ['inbound', 'outbound'];
+      if (parseInt(data.retCode) === 0) {
+        const result = data.retJSON.result;
+        for (let o of result) {
+          const propertiy = properties[parseInt(o.ad_flag)];
+          TweenLite.to(this.estimate, 1.5, {
+            [propertiy]: parseInt(o.passenger_num),
+            snap: propertiy,
+            ease: Expo.easeOut
+          });
+        }
+      }
+    },
+    // 值机 - 自助率
+    responseHandler3(data) {
+      if (parseInt(data.retCode) === 0) {
+        const result = data.retJSON.result[0];
+        this.checkIn.cussRate = result.cussrate || 0;
+      }
+    },
+    // 请求定时器
+    requestTimer(url, execDate) {
+      return timer(0, 30000).pipe(
+          concatMap(() => defer(() => {
+            const params = {
+              exec_date: execDate || this.date,
+              terminal_code: this.getTerminalCode()
+            }
+            return axios.get(url, {params});
+          }))
+      );
+    },
+    getTerminalCode() {
+      const terminalCodeDict = ['', 'T2', 'T3'];
+      return terminalCodeDict[this.scene];
+    },
+    getBlockData() {
+      timer(0, 30000).pipe(
+          concatMap(() => defer(() => {
+            const tc = ['', 'T2', 'T3'];
+            const params = {
+              exec_date: format(addDays(Date.now(), 1), 'yyyy-MM-dd'),
+              terminal_code: tc[this.scene]
+            }
+            return axios.get(API_URL.BOOKED_NUM, {params})
+          }))
+      ).subscribe(data => {
+        const properties = ['inbound', 'outbound'];
+        if (parseInt(data.retCode) === 0) {
+          const result = data.retJSON.result;
+          for (let o of result) {
+            // console.log(o);
+            this.estimate[properties[parseInt(o.ad_flag)]] = parseInt(o.passenger_num);
+          }
+        }
+      });
+    }
+  },
+  watch: {
+    scene() {
+      this.unsubscribeAllRequestTimer();
+      this.subscribeAllRequestTimer();
+    }
   }
 }
 </script>

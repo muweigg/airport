@@ -5,12 +5,12 @@ module.exports = {
   devServer: {
     host: process.env.HOST,
     port: process.env.PORT,
-    // proxy: {
-    //   '/v1': {
-    //     target: process.env.VUE_APP_API_PROXY,
-    //     changeOrigin: true
-    //   },
-    // }
+    proxy: {
+      '/bigdata': {
+        target: process.env.VUE_APP_API_PROXY,
+        changeOrigin: true
+      },
+    }
   },
   chainWebpack: (config) => {
     !isDev && config.optimization.minimizer('terser').tap((args) => {
