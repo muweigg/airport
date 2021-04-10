@@ -34,18 +34,37 @@
 
     <div class="scene">
       <div class="switch-scene">
-        <strong :class="{active: scene == 1}" @click="scene = 1">总览</strong>
-        <strong :class="{active: scene == 2}" @click="scene = 2">T2</strong>
-        <strong :class="{active: scene == 3}" @click="scene = 3">T3</strong>
+        <strong :class="{active: scene == 0}" @click="selectedTo(0)">总览</strong>
+        <strong :class="{active: scene == 1}" @click="selectedTo(1)">T2</strong>
+        <strong :class="{active: scene == 2}" @click="selectedTo(2)">T3</strong>
       </div>
 
-      <div class="overview">
-        <header>
-          <strong>重庆江北国际机场</strong>
-          CHONGQING Airport Group Co.,Itd
-        </header>
-        <img src="@/assets/images/overview.png" alt="">
+      <div class="swiper-container" ref="swiperContainer">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide overview">
+            <header>
+              <strong>重庆江北国际机场</strong>
+              CHONGQING Airport Group Co.,Itd
+            </header>
+            <img src="@/assets/images/overview.png" alt="">
+          </div>
+          <div class="swiper-slide T2">
+            <img src="@/assets/images/T3.png" alt="">
+          </div>
+          <div class="swiper-slide T3">
+            <img src="@/assets/images/T3.png" alt="">
+          </div>
+        </div>
       </div>
+
+      <div class="swiper-container controller" ref="swiperContainer2">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"></div>
+          <div class="swiper-slide"></div>
+          <div class="swiper-slide"></div>
+        </div>
+      </div>
+
     </div>
 
     <div class="hat tail"></div>
@@ -235,7 +254,8 @@ import * as echarts from 'echarts';
 import {format} from "date-fns";
 import {interval} from "rxjs";
 import ProgressCircle from '@/components/progress-circle.vue';
-import {screen} from "../subscribes";
+import Swiper from 'swiper';
+import config from '@/js/echartsConfig';
 
 export default {
   name: 'Home',
@@ -244,63 +264,51 @@ export default {
     return {
       date: format(new Date(), 'yyyy-MM-dd'),
       time: format(new Date(), 'HH:mm:ss'),
-      scene: 1
+      scene: 0,
+      swiper: null,
+      controller: null,
     }
   },
   mounted() {
     interval(1000).subscribe(
         () => this.time = format(new Date(), 'HH:mm:ss'));
 
-    const option = {
-      xAxis: {
-        type: 'category',
-        boundaryGap: false,
-        axisLine: {show: false},
-        axisTick: {show: false},
-        axisLabel: {
-          textStyle: {color: '#ffffff'},
-        },
-        data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-      },
-      yAxis: {
-        type: 'value',
-        splitLine: {show: false},
-        fontSize: 24,
-        axisLabel: {
-          textStyle: {color: '#ffffff'},
-        },
-      },
-      grid: {
-        top: '15%',
-        left: '5%',
-        right: '5%',
-        bottom: 0,
-        containLabel: true
-      },
-      series: [{
-        data: [2820, 3932, 5000, 4401, 3934, 2890, 3330, 2320, 4220, 4900, 4455],
-        type: 'line',
-        smooth: true,
-        lineStyle: {
-          color: '#069dec',
-          width: 1,
-        },
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-            offset: 0,
-            color: '#04aafe'
-          }, {
-            offset: 1,
-            color: 'transparent'
-          }]),
-        },
-        areaStyle: {}
-      }]
-    };
-    const myChart = echarts.init(this.$refs.securityCheck);
-    myChart.setOption(option);
+    this.initSwiper();
+    this.initEcharts();
+  },
+  methods: {
+    initSwiper() {
+      this.controller = new Swiper(this.$refs.swiperContainer2, {
+        direction: 'vertical',
+        initialSlide: 2,
+      });
+      this.swiper = new Swiper(this.$refs.swiperContainer);
+      this.controller.on('activeIndexChange',
+          swiperInstance => {
+            const toIdx = 2 - swiperInstance.activeIndex;
+            this.swiper.slideTo(toIdx);
+            this.scene = toIdx;
+          });
+      this.swiper.on('activeIndexChange',
+          swiperInstance => {
+            const toIdx = 2 - swiperInstance.activeIndex;
+            this.controller.slideTo(toIdx);
+            this.scene = swiperInstance.activeIndex;
+          });
+    },
+    initEcharts() {
+      config.xAxis.data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      config.series[0].data = [2820, 3932, 5000, 4401, 3934, 2890, 3330, 2320, 4220, 4900, 4455];
+      const myChart = echarts.init(this.$refs.securityCheck);
+      myChart.setOption(config);
 
-    window.addEventListener('resize', () => myChart.resize());
+      window.addEventListener('resize', () => myChart.resize());
+    },
+    selectedTo(idx) {
+      this.scene = idx;
+      this.controller.slideTo(2 - idx);
+      this.swiper.slideTo(idx);
+    },
   }
 }
 </script>
