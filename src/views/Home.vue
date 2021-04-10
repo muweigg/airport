@@ -427,27 +427,6 @@ export default {
       const terminalCodeDict = ['', 'T2', 'T3'];
       return terminalCodeDict[this.scene];
     },
-    getBlockData() {
-      timer(0, 30000).pipe(
-          concatMap(() => defer(() => {
-            const tc = ['', 'T2', 'T3'];
-            const params = {
-              exec_date: format(addDays(Date.now(), 1), 'yyyy-MM-dd'),
-              terminal_code: tc[this.scene]
-            }
-            return axios.get(API_URL.BOOKED_NUM, {params})
-          }))
-      ).subscribe(data => {
-        const properties = ['inbound', 'outbound'];
-        if (parseInt(data.retCode) === 0) {
-          const result = data.retJSON.result;
-          for (let o of result) {
-            // console.log(o);
-            this.estimate[properties[parseInt(o.ad_flag)]] = parseInt(o.passenger_num);
-          }
-        }
-      });
-    }
   },
   watch: {
     scene() {
