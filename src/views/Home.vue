@@ -49,7 +49,7 @@
             <img src="@/assets/images/overview.png" alt="">
           </div>
           <div class="swiper-slide T2">
-            <img src="@/assets/images/T3.png" alt="">
+            <img src="@/assets/images/T2.png" alt="">
           </div>
           <div class="swiper-slide T3">
             <img src="@/assets/images/T3.png" alt="">
