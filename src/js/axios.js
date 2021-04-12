@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// axios.defaults.baseURL = 'http://weixin.cqa.cn/cqabi/jk';
+axios.defaults.baseURL = process.env.VUE_APP_API_PREFIX;
 axios.defaults.headers.common['X-HW-ID'] = 'com.roma.cqatest';
 axios.defaults.headers.common['X-HW-APPKEY'] = 'Ki+VbWe3lb9uvEarLeuPUw==';
 
