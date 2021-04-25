@@ -59,6 +59,33 @@ body {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    outline: none;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  button {
+    background-color: transparent;
+    border: 0;
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
+
+  .rotate-enter-active, .rotate-leave-active {
+    transition: transform .5s ease-in-out;
+  }
+
+  .rotate-enter, .rotate-leave-to {
+    opacity: 0;
+    transform: rotate(-90deg) scale(.2);
   }
 
 }
