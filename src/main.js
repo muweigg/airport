@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import {screen} from './subscribes'
 
 import '@/assets/css/common.scss'
 
@@ -12,6 +13,13 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
+screen.subscribe(isPortrait => {
+  const vw = window[!isPortrait ? 'innerWidth' : 'innerHeight'],
+    vh = window[!isPortrait ? 'innerHeight' : 'innerWidth']
+  document.documentElement.style.setProperty('--rvw', `${vw}px`)
+  document.documentElement.style.setProperty('--rvh', `${vh}px`)
+});
 
 window.addEventListener('resize', () => {
   const vh = window.innerHeight

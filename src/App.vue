@@ -7,5 +7,6 @@
 <style lang="scss">
 #app {
   background: #030b1d url(./assets/images/bg.jpg) center top/100% auto repeat-y;
+  min-height: 100%;
 }
 </style>

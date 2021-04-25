@@ -1,11 +1,12 @@
 <template>
-  <div class="home">
-    <div class="top">航站楼运行总览-旅客</div>
-    <div class="logo">LOGO</div>
-    <div class="date-time">
-      <div>{{ date }}</div>
-      <div>{{ time }}</div>
-    </div>
+  <transition name="fade">
+    <div class="home" v-show="admission">
+      <div class="top">航站楼运行总览-旅客</div>
+      <div class="logo">LOGO</div>
+      <div class="date-time">
+        <div>{{ date }}</div>
+        <div>{{ time }}</div>
+      </div>
 
     <header>
       <div class="flaunt">
@@ -257,31 +258,29 @@
       *本次只关注国内形势数据（不包括私航和国际航班）
     </footer>
   </div>
+  </transition>
 </template>
 
 <script>
 import * as echarts from 'echarts';
-import {format, addDays} from "date-fns";
-import {timer, interval, defer} from "rxjs";
-import {concatMap} from 'rxjs/operators';
-import {TweenLite, Expo} from 'gsap';
+import {format} from "date-fns";
+import {interval} from "rxjs";
 import ProgressCircle from '@/components/progress-circle.vue';
 import Swiper from 'swiper';
-import axios from '@/js/axios';
-import API_URL from "@/js/API_URL";
 import config from '@/js/echartsConfig';
-import {sortBy} from 'lodash';
 
 export default {
   name: 'Home',
   components: {ProgressCircle},
   data() {
     return {
+      admission: false,
       date: format(new Date(), 'yyyy-MM-dd'),
       time: format(new Date(), 'HH:mm:ss'),
       scene: 0,
       swiper: null,
       controller: null,
+      $timer: null,
       charts: null,
       subscribeable: [],
       subscriptions: [],
@@ -334,15 +333,18 @@ export default {
       }
     }
   },
+  beforeDestroy() {
+    this.$timer && !this.$timer.closed && this.$timer.unsubscribe();
+  },
   mounted() {
-    interval(1000).subscribe(
-        () => {
-          this.date = format(new Date(), 'yyyy-MM-dd');
-          this.time = format(new Date(), 'HH:mm:ss');
-        });
+    this.admission = true;
+    this.$timer = interval(1000).subscribe(
+        () => this.time = format(new Date(), 'HH:mm:ss'));
 
-    this.initSwiper();
-    this.initEcharts();
+    this.$nextTick(() => {
+      this.initSwiper();
+      this.initEcharts();
+    });
     this.initAllRequestTimer();
     this.subscribeAllRequestTimer();
   },
@@ -358,13 +360,13 @@ export default {
             const toIdx = 2 - swiperInstance.activeIndex;
             this.swiper.slideTo(toIdx);
             this.scene = toIdx;
-          });
+          }).on('click', this.toTn);
       this.swiper.on('activeIndexChange',
           swiperInstance => {
             const toIdx = 2 - swiperInstance.activeIndex;
             this.controller.slideTo(toIdx);
             this.scene = swiperInstance.activeIndex;
-          });
+          }).on('click', this.toTn);
     },
     initEcharts() {
       this.charts = echarts.init(this.$refs.securityCheck);
@@ -374,6 +376,11 @@ export default {
       this.scene = idx;
       this.controller.slideTo(2 - idx);
       this.swiper.slideTo(idx);
+    },
+    toTn() {
+      if (!this.scene) return;
+
+      this.$router.push({name: `T${this.scene + 1}`});
     },
     initAllRequestTimer() {
       this.subscribeable = [
