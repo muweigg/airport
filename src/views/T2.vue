@@ -11,12 +11,12 @@
         <a href="javascript:" tabindex="0">指廊A</a>
         <a href="javascript:" tabindex="0">指廊B</a>
         <a href="javascript:" tabindex="0">指廊C</a>
-        <a href="javascript:" tabindex="0">2A</a>
-        <a href="javascript:" tabindex="0">2B</a>
-        <a href="javascript:" tabindex="0">2C</a>
-        <a href="javascript:" tabindex="0">2D</a>
-        <a href="javascript:" tabindex="0">2E</a>
-        <a href="javascript:" tabindex="0">2F</a>
+        <a href="javascript:" tabindex="0">值机岛2A</a>
+        <a href="javascript:" tabindex="0">值机岛2B</a>
+        <a href="javascript:" tabindex="0">值机岛2C</a>
+        <a href="javascript:" tabindex="0">值机岛2D</a>
+        <a href="javascript:" tabindex="0">值机岛2E</a>
+        <a href="javascript:" tabindex="0">值机岛2F</a>
       </div>
     </div>
   </transition>
