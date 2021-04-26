@@ -2,9 +2,15 @@
   <transition name="fade">
     <div class="T2" v-show="admission">
       <transition name="rotate">
-        <img src="../assets/images/T2/T2.png" alt="" v-show="rotateAdmission"
-             @load="rotateAdmission = true">
+        <img src="../assets/images/T2/T2.png" alt="" v-show="rotateAdmission">
       </transition>
+
+      <div class="check-in-island t2b"></div>
+      <div class="check-in-island t2a"></div>
+      <div class="check-in-island t2c"></div>
+      <div class="check-in-island t2d"></div>
+      <div class="check-in-island t2e"></div>
+      <div class="check-in-island t2f"></div>
 
       <a href="javascript:" class="float-menu" tabindex="0"></a>
 
@@ -43,6 +49,10 @@
         <a href="javascript:" tabindex="0" :class="{active: active === 9}"
            @click="switchActive(9)">值机岛2F</a>
       </div>
+
+      <div class="debug">
+        <button @click.prevent.stop="test">Test</button>
+      </div>
     </div>
   </transition>
 </template>
@@ -69,6 +79,9 @@ export default {
         return this.active = 0;
       }
       this.active = active;
+    },
+    test() {
+      this.rotateAdmission = !this.rotateAdmission;
     }
   }
 }
