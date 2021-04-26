@@ -1,0 +1,48 @@
+// 路由切换 淡入 / 淡出
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+
+// 向左滑入淡入 / 向右滑出淡出
+.slide-enter {
+  opacity: 0;
+  transform: translateX(100%);
+  z-index: 1;
+}
+
+.slide-leave-to {
+  opacity: 0;
+  //transform: translateX(-100%);
+  transform: scale(.1);
+}
+
+.slide-enter-active {
+  transition: all .5s cubic-bezier(0,.20,.20,1);
+}
+
+.slide-leave-active {
+  transition: all .5s cubic-bezier(0,.20,.20,1);
+}
+
+// 内容路由 旋转淡入 / 右滑淡出
+.rotate-enter {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-90deg) scale(.2) !important;
+}
+
+.rotate-enter-active {
+  transition: all .3s ease-out;
+}
+
+.rotate-leave-to {
+  opacity: 0;
+  transform: translate(0, -50%) !important;
+}
+
+.rotate-leave-active {
+  transition: all .3s ease-in;
+}
