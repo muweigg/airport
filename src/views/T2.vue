@@ -2,7 +2,8 @@
   <transition name="fade">
     <div class="T2" v-show="admission">
       <transition name="rotate">
-        <img src="../assets/images/T2/T2.png" alt="" v-show="admission">
+        <img src="../assets/images/T2/T2.png" alt="" v-show="rotateAdmission"
+             @load="rotateAdmission = true">
       </transition>
 
       <a href="javascript:" class="float-menu" tabindex="0"></a>
@@ -52,6 +53,7 @@ export default {
   data() {
     return {
       admission: false,
+      rotateAdmission: false,
       active: 0
     }
   },
