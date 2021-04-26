@@ -6,12 +6,12 @@ module.exports = {
   devServer: {
     host: process.env.HOST,
     port: process.env.PORT,
-    // proxy: {
-    //   '/cqabi': {
-    //     target: process.env.VUE_APP_API_PROXY,
-    //     changeOrigin: true
-    //   },
-    // }
+    proxy: {
+      '/cqabi': {
+        target: process.env.VUE_APP_API_PROXY,
+        changeOrigin: true
+      },
+    }
   },
   chainWebpack: (config) => {
     !isDev && config.optimization.minimizer('terser').tap((args) => {
