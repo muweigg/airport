@@ -71,21 +71,30 @@ body {
     border: 0;
   }
 
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
-  }
-
   .fade-enter, .fade-leave-to {
     opacity: 0;
   }
 
-  .rotate-enter-active, .rotate-leave-active {
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+
+  .rotate-enter {
+    opacity: 0;
+    transform: rotate(-90deg) scale(.2);
+  }
+
+  .rotate-enter-active {
     transition: transform .5s ease-in-out;
   }
 
-  .rotate-enter, .rotate-leave-to {
+  .rotate-leave-to {
     opacity: 0;
-    transform: rotate(-90deg) scale(.2);
+    transform: translateX(50%);
+  }
+
+  .rotate-leave-active {
+    transition: all .3s ease-out;
   }
 
 }
