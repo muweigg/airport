@@ -21,7 +21,7 @@ export default [
   {
     path: '/t3',
     name: 'T3',
-    // component: () => import(/* webpackChunkName: "T2" */ '../views/T2.vue')
+    // component: () => import(/* webpackChunkName: "T3" */ '../views/T3.vue')
     component: T3
   },
 ]
