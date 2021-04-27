@@ -35,4 +35,10 @@ export default {
 
   // 2.9 行李数据统计——按地理位置下钻
   PSR_BAG_INFO_DRILL_DOWN: '/bigdata/dm/huawei/v1/lky/psrBagInfoDrilldown/query',
+
+  // 2.13 登机口当前航班信息统计
+  GATE_FLIGHT_INFO: '/bigdata/dm/huawei/v1/lky/gate_flight_info/query',
+
+  // 2.14 登机口后续航班查询
+  NEXT_FLIGHT_BY_CORRIDOR: '/bigdata/dm/huawei/v1/lky/next_flight_bycorridor/query',
 }
