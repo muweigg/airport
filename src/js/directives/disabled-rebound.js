@@ -4,6 +4,14 @@ import MobileDetect from 'mobile-detect'
 const md = new MobileDetect(window.navigator.userAgent);
 const iOS = md.os();
 
+const platform = {'iOS': true}
+
+// document.body.addEventListener('touchmove', (evt) => {
+//   if (!evt._isScroller) {
+//     evt.preventDefault()
+//   }
+// }, {passive: false})
+
 function pos(el) {
   const top = el.scrollTop
     , totalScroll = el.scrollHeight
@@ -14,8 +22,6 @@ function pos(el) {
     el.scrollTop = top - 1
   }
 }
-
-const platform = {'iOS': true}
 
 export default {
   bind: (el, binding, vnode) => {

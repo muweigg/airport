@@ -30,3 +30,11 @@ window.addEventListener('resize', () => {
 const event = document.createEvent('Event')
 event.initEvent('resize', true, true)
 window.dispatchEvent(event)
+
+document.body.addEventListener('touchmove', function(evt) {
+  //In this case, the default behavior is scrolling the body, which
+  //would result in an overflow.  Since we don't want that, we preventDefault.
+  if(!evt._isScroller) {
+    evt.preventDefault()
+  }
+}, {passive: false})
