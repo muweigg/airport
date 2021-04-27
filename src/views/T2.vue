@@ -53,7 +53,13 @@ import T2D from '@/assets/images/T2/2D.png';
 import T2E from '@/assets/images/T2/2E.png';
 import T2F from '@/assets/images/T2/2F.png';
 
+import {addDays, format} from "date-fns";
+import axios from '@/js/axios';
+import API_URL from "@/js/API_URL";
 import {delay} from 'lodash';
+import {defer, combineLatest} from 'rxjs';
+import {concatMap} from "rxjs/operators";
+import {Expo, TweenLite} from "gsap";
 
 export default {
   name: "T2",
@@ -63,35 +69,93 @@ export default {
         {name: '指廊A', active: 1, loaded: false, src: ''},
         {name: '指廊B', active: 2, loaded: false, src: ''},
         {name: '指廊C', active: 3, loaded: false, src: ''},
-        {name: '值机岛2A', active: 4, loaded: false, src: T2A},
-        {name: '值机岛2B', active: 5, loaded: false, src: T2B},
-        {name: '值机岛2C', active: 6, loaded: false, src: T2C},
-        {name: '值机岛2D', active: 7, loaded: false, src: T2D},
-        {name: '值机岛2E', active: 8, loaded: false, src: T2E},
-        {name: '值机岛2F', active: 9, loaded: false, src: T2F},
+        {name: '值机岛2A', flag: 2, active: 4, loaded: false, src: T2A},
+        {name: '值机岛2B', flag: 2, active: 5, loaded: false, src: T2B},
+        {name: '值机岛2C', flag: 2, active: 6, loaded: false, src: T2C},
+        {name: '值机岛2D', flag: 2, active: 7, loaded: false, src: T2D},
+        {name: '值机岛2E', flag: 2, active: 8, loaded: false, src: T2E},
+        {name: '值机岛2F', flag: 2, active: 9, loaded: false, src: T2F},
       ],
       admission: false,
       rotateAdmission: false,
       active: 0,
-      openList: false
+      openList: false,
+      // subscribeable: [],
+      // subscriptions: [],
+      subscribeable: null,
+      subscriptions: null,
     }
+  },
+  beforeDestroy() {
+    this.unsubscribeAllRequest();
   },
   mounted() {
     this.admission = true;
+
+    this.$nextTick(() => this.initAllRequest());
   },
   methods: {
     goBack() {
       this.$router.back();
     },
     switchActive(active) {
+      this.unsubscribeAllRequest();
+
       if (this.active === active) {
         this.openList = false;
         return this.active = 0;
       }
       this.active = active;
+      this.subscribeAllRequest();
     },
     switchOver() {
       delay(() => this.openList = true, 300);
+    },
+    initAllRequest() {
+      this.subscribeable = combineLatest(
+          this.requestTimer(API_URL.PASSENGER_NUM_BY_LOCATION_DRILL_DOWN),
+          this.requestTimer(API_URL.PSR_BAG_INFO_DRILL_DOWN),
+      )
+      // this.subscribeable = [
+      //   this.requestTimer(API_URL.PASSENGER_NUM_BY_LOCATION_DRILL_DOWN),
+      //   this.requestTimer(API_URL.PSR_BAG_INFO_DRILL_DOWN),
+      // ];
+    },
+    subscribeAllRequest() {
+      // for (let i = 0; i < this.subscribeable.length; i++) {
+      //   this.subscriptions.push(this.subscribeable[i].subscribe(this[`responseHandler${i + 1}`]));
+      // }
+      this.subscriptions = this.subscribeable.subscribe(this.responseHandler)
+    },
+    unsubscribeAllRequest() {
+      // for (let o of this.subscriptions) {
+      //   o.unsubscribe();
+      // }
+      // this.subscriptions = [];
+      if (this.subscriptions) this.subscriptions.unsubscribe();
+    },
+    responseHandler(data1, data2) {
+      const type1 = {
+        4: '2A', 5: '2B', 6: '2C', 7: '2D', 8: '2E', 9: '2F'
+      }
+
+      if (parseInt(data1.retCode) === 0 && parseInt(data2.retCode) === 0 ) {
+        // const result = data.retJSON.result;
+        // for (let o of result) {
+        //   // if
+        //   // console.log()
+        // }
+      }
+    },
+    requestTimer(url) {
+      return defer(() => {
+        const params = {
+          exec_date: format(new Date(), 'yyyyMMdd'),
+          level_flag: 2,
+          terminal_code: 'T2'
+        }
+        return axios.get(url, {params});
+      });
     }
   }
 }

@@ -28,4 +28,11 @@ export default {
 
   // 进港数据统计
   FLIGHT_ARRIVAL_INFO: '/bigdata/dm/huawei/v1/lky/flightArrivalInfo/query',
+
+  // T2 & T3
+  // 2.6 旅客值机人数统计—按地理位置下钻
+  PASSENGER_NUM_BY_LOCATION_DRILL_DOWN: '/bigdata/dm/huawei/v1/lky/passengerNumByLocationDrilldown/query',
+
+  // 2.9 行李数据统计——按地理位置下钻
+  PSR_BAG_INFO_DRILL_DOWN: '/bigdata/dm/huawei/v1/lky/psrBagInfoDrilldown/query',
 }
