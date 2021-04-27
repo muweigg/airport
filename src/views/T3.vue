@@ -25,19 +25,14 @@
       <div class="wrap" :class="{scale: openList}">
         <transition-group name="slide"
                           v-on:after-enter="switchOver">
-          <div class="check-in-island ac3E" :key="1" v-show="active === 1"></div>
-          <div class="check-in-island ac3F" :key="2" v-show="active === 2"></div>
-          <div class="check-in-island ac3G" :key="3" v-show="active === 3"></div>
-          <div class="check-in-island ac3H" :key="4" v-show="active === 4"></div>
-          <div class="check-in-island t3a" :key="5" v-show="active === 5"></div>
-          <div class="check-in-island t3b" :key="6" v-show="active === 6"></div>
-          <div class="check-in-island t3c" :key="7" v-show="active === 7"></div>
-          <div class="check-in-island t3d" :key="8" v-show="active === 8"></div>
-          <div class="check-in-island t3e" :key="9" v-show="active === 9"></div>
-          <div class="check-in-island t3f" :key="10" v-show="active === 10"></div>
-          <div class="check-in-island t3g" :key="11" v-show="active === 11"></div>
-          <div class="check-in-island t3h" :key="12" v-show="active === 12"></div>
-          <div class="check-in-island t3j" :key="13" v-show="active === 13"></div>
+          <div class="check-in-island" v-for="item in items.slice(0, 4)" :key="item.name"
+               v-show="item.loaded && active === item.active">
+            <img :src="item.src" alt="" @load="item.loaded = true">
+          </div>
+          <div class="check-in-island" :key="5"
+               v-show="items[4].loaded && active >= items[4].activeRange[0] && active <= items[4].activeRange[1]">
+            <img :src="items[4].src" alt="" @load="items[4].loaded = true">
+          </div>
         </transition-group>
       </div>
 
@@ -55,10 +50,25 @@
 </template>
 
 <script>
+import AC3E from '@/assets/images/T3/ac3E.png';
+import AC3F from '@/assets/images/T3/ac3F.png';
+import AC3G from '@/assets/images/T3/ac3G.png';
+import AC3H from '@/assets/images/T3/ac3H.png';
+import T3x from '@/assets/images/T3/3x.png';
+
+import {delay} from 'lodash';
+
 export default {
   name: "T3",
   data() {
     return {
+      items: [
+        {name: '指廊E', src: AC3E, loaded: false, active: 1},
+        {name: '指廊F', src: AC3F, loaded: false, active: 2},
+        {name: '指廊G', src: AC3G, loaded: false, active: 3},
+        {name: '指廊H', src: AC3H, loaded: false, active: 4},
+        {name: '值机岛3x', src: T3x, loaded: false, activeRange: [5, 13]},
+      ],
       menuList: [
         {name: '指廊E', active: 1},
         {name: '指廊F', active: 2},
@@ -95,8 +105,7 @@ export default {
       this.active = active;
     },
     switchOver() {
-      setTimeout(() => this.openList = true, 300);
-      console.log(this.active);
+      delay(() => this.openList = true, 300);
     }
   }
 }

@@ -25,12 +25,10 @@
       <div class="wrap" :class="{scale: openList}">
         <transition-group name="slide"
                           v-on:after-enter="switchOver">
-          <div class="check-in-island t2a" :key="4" v-show="active === 4"></div>
-          <div class="check-in-island t2b" :key="5" v-show="active === 5"></div>
-          <div class="check-in-island t2c" :key="6" v-show="active === 6"></div>
-          <div class="check-in-island t2d" :key="7" v-show="active === 7"></div>
-          <div class="check-in-island t2e" :key="8" v-show="active === 8"></div>
-          <div class="check-in-island t2f" :key="9" v-show="active === 9"></div>
+          <div class="check-in-island" v-for="item in menuList" :key="item.name"
+               v-show="item.loaded && active === item.active">
+            <img :src="item.src" alt="" @load="item.loaded = true">
+          </div>
         </transition-group>
       </div>
 
@@ -48,20 +46,29 @@
 </template>
 
 <script>
+import T2A from '@/assets/images/T2/2A.png';
+import T2B from '@/assets/images/T2/2B.png';
+import T2C from '@/assets/images/T2/2C.png';
+import T2D from '@/assets/images/T2/2D.png';
+import T2E from '@/assets/images/T2/2E.png';
+import T2F from '@/assets/images/T2/2F.png';
+
+import {delay} from 'lodash';
+
 export default {
   name: "T2",
   data() {
     return {
       menuList: [
-        {name: '指廊A', active: 1},
-        {name: '指廊B', active: 2},
-        {name: '指廊C', active: 3},
-        {name: '值机岛2A', active: 4},
-        {name: '值机岛2B', active: 5},
-        {name: '值机岛2C', active: 6},
-        {name: '值机岛2D', active: 7},
-        {name: '值机岛2E', active: 8},
-        {name: '值机岛2F', active: 9},
+        {name: '指廊A', active: 1, loaded: false, src: ''},
+        {name: '指廊B', active: 2, loaded: false, src: ''},
+        {name: '指廊C', active: 3, loaded: false, src: ''},
+        {name: '值机岛2A', active: 4, loaded: false, src: T2A},
+        {name: '值机岛2B', active: 5, loaded: false, src: T2B},
+        {name: '值机岛2C', active: 6, loaded: false, src: T2C},
+        {name: '值机岛2D', active: 7, loaded: false, src: T2D},
+        {name: '值机岛2E', active: 8, loaded: false, src: T2E},
+        {name: '值机岛2F', active: 9, loaded: false, src: T2F},
       ],
       admission: false,
       rotateAdmission: false,
@@ -84,8 +91,7 @@ export default {
       this.active = active;
     },
     switchOver() {
-      setTimeout(() => this.openList = true, 300);
-      console.log(this.active);
+      delay(() => this.openList = true, 300);
     }
   }
 }
