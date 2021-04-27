@@ -46,6 +46,9 @@
 </template>
 
 <script>
+import A from '@/assets/images/T2/A.png';
+import B from '@/assets/images/T2/B.png';
+import C from '@/assets/images/T2/C.png';
 import T2A from '@/assets/images/T2/2A.png';
 import T2B from '@/assets/images/T2/2B.png';
 import T2C from '@/assets/images/T2/2C.png';
@@ -60,9 +63,9 @@ export default {
   data() {
     return {
       menuList: [
-        {name: '指廊A', active: 1, loaded: false, src: ''},
-        {name: '指廊B', active: 2, loaded: false, src: ''},
-        {name: '指廊C', active: 3, loaded: false, src: ''},
+        {name: '指廊A', active: 1, loaded: false, src: A},
+        {name: '指廊B', active: 2, loaded: false, src: B},
+        {name: '指廊C', active: 3, loaded: false, src: C},
         {name: '值机岛2A', active: 4, loaded: false, src: T2A},
         {name: '值机岛2B', active: 5, loaded: false, src: T2B},
         {name: '值机岛2C', active: 6, loaded: false, src: T2C},
