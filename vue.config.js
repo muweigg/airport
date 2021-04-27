@@ -2,6 +2,7 @@ const isDev = process.env.NODE_ENV === 'development';
 
 module.exports = {
   productionSourceMap: false,
+  publicPath: process.env.VUE_APP_ASSETS_PREFIX || '/',
   devServer: {
     host: process.env.HOST,
     port: process.env.PORT,
