@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import {screen} from './subscribes'
 
+import '@/js/directives'
 import '@/assets/css/common.scss'
 
 Vue.config.productionTip = false

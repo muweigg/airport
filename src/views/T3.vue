@@ -9,7 +9,7 @@
 
       <div :class="['data-list', {open: openList}]">
         <h3>值机岛3A</h3>
-        <div class="list-wrap">
+        <div class="list-wrap" v-disabled-rebound>
           <table>
             <tbody>
             <tr v-for="i in 20">
@@ -40,7 +40,7 @@
 
       <button class="go-back" @click="goBack">&#10005;</button>
 
-      <div class="menu-list">
+      <div class="menu-list" v-disabled-rebound>
         <a href="javascript:" tabindex="0" v-for="menu in menuList"
            :class="{active: active === menu.active}"
            @click="switchActive(menu.active)">{{ menu.name }}</a>
