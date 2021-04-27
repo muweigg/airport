@@ -1,4 +1,8 @@
 import {defer} from 'lodash'
+import MobileDetect from 'mobile-detect'
+
+const md = new MobileDetect(window.navigator.userAgent);
+const iOS = md.os();
 
 function pos(el) {
   const top = el.scrollTop
@@ -11,8 +15,14 @@ function pos(el) {
   }
 }
 
+const platform = {'iOS': true}
+
 export default {
   bind: (el, binding, vnode) => {
+    if (!platform[iOS]) return;
+
+    el.classList.add('disabled-rebound');
+
     el.addEventListener('touchstart', () => pos(el))
 
     el.addEventListener('touchmove', (evt) => {
@@ -22,5 +32,9 @@ export default {
 
     el.addEventListener('scroll', () => pos(el))
   },
-  inserted: el => defer(() => el.scrollTop = 1)
+  inserted: el => {
+    if (!platform[iOS]) return;
+
+    defer(() => el.scrollTop = 1)
+  }
 }

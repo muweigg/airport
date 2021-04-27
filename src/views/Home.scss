@@ -4,6 +4,12 @@
   position: relative;
   padding-bottom: 50px;
 
+  &.disabled-rebound {
+    margin-top: -1px;
+    margin-bottom: -1px;
+    padding: 1px 0;
+  }
+
   .top {
     display: flex;
     align-items: center;

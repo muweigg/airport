@@ -61,6 +61,12 @@
       color: #fff;
       margin-top: 30px;
 
+      &.disabled-rebound {
+        margin-top: 29px;
+        margin-bottom: -1px;
+        padding: 1px 0;
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
@@ -170,14 +176,19 @@
 
     width: 260px;
     position: fixed;
-    top: -1px;
+    top: 0;
     right: 0;
-    bottom: -1px;
+    bottom: 0;
     overflow-y: auto;
     transform: translateX(100%);
     transition: transform .3s ease-in-out;
     pointer-events: none;
-    padding: 1px 0;
+
+    &.disabled-rebound {
+      top: -1px;
+      bottom: -1px;
+      padding: 1px 0;
+    }
 
     a {
       flex: none;
