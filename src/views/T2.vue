@@ -8,7 +8,28 @@
       </transition>
 
       <div :class="['data-list', {open: openList}]">
-        <h3>{{ selected && selected.name }}</h3>
+        <h3>
+          {{ selected && selected.name }}
+          <transition name="fade">
+            <svg v-if="!!loading" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 30" xml:space="preserve">
+            <rect x="0" y="10" width="4" height="10" fill="#fff" opacity="0.2">
+              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
+              <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
+              <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
+            </rect>
+            <rect x="8" y="10" width="4" height="10" fill="#fff" opacity="0.2">
+              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate>
+              <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate>
+              <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate>
+            </rect>
+            <rect x="16" y="10" width="4" height="10" fill="#fff" opacity="0.2">
+              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate>
+              <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate>
+              <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate>
+            </rect>
+          </svg>
+          </transition>
+        </h3>
         <div class="list-wrap" v-disabled-rebound>
           <transition-group name="fade">
             <table v-show="corridorList.length > 0" key="corridorList">
@@ -83,15 +104,15 @@ export default {
   data() {
     return {
       menuList: [
-        {name: '指廊A', type: 0, key: 'A', loaded: false, src: A},
-        {name: '指廊B', type: 0, key: 'B', loaded: false, src: B},
-        {name: '指廊C', type: 0, key: 'C', loaded: false, src: C},
-        {name: '值机岛2A', type: 1, key: 'A', loaded: false, src: T2A},
-        {name: '值机岛2B', type: 1, key: 'B', loaded: false, src: T2B},
-        {name: '值机岛2C', type: 1, key: 'C', loaded: false, src: T2C},
-        {name: '值机岛2D', type: 1, key: 'D', loaded: false, src: T2D},
-        {name: '值机岛2E', type: 1, key: 'E', loaded: false, src: T2E},
-        {name: '值机岛2F', type: 1, key: 'F', loaded: false, src: T2F},
+        {name: '指廊 A', type: 0, key: 'A', loaded: false, src: A},
+        {name: '指廊 B', type: 0, key: 'B', loaded: false, src: B},
+        {name: '指廊 C', type: 0, key: 'C', loaded: false, src: C},
+        {name: '值机岛 2A', type: 1, key: 'A', loaded: false, src: T2A},
+        {name: '值机岛 2B', type: 1, key: 'B', loaded: false, src: T2B},
+        {name: '值机岛 2C', type: 1, key: 'C', loaded: false, src: T2C},
+        {name: '值机岛 2D', type: 1, key: 'D', loaded: false, src: T2D},
+        {name: '值机岛 2E', type: 1, key: 'E', loaded: false, src: T2E},
+        {name: '值机岛 2F', type: 1, key: 'F', loaded: false, src: T2F},
       ],
       admission: false,
       rotateAdmission: false,
@@ -101,7 +122,7 @@ export default {
       subscriptions: null,
       corridorList: [],
       counterList: [],
-      loading: false
+      loading: 0,
     }
   },
   beforeDestroy() {
@@ -118,12 +139,12 @@ export default {
       this.unsubscribeAllRequest();
 
       if (this.selected === menu) {
-        this.loading = false;
+        this.loading = 0;
         this.openList = false;
         return this.selected = null;
       }
 
-      this.loading = true;
+      this.loading = 1;
 
       this.$nextTick(() => _defer(() => {
         this.corridorList = [];
@@ -187,6 +208,8 @@ export default {
           this.counterList.push(comprehensiveData[o]);
         }
       }
+
+      this.loading = 0;
     },
     responseHandlerCorridor([data1, data2]) {
       if (parseInt(data1.retCode) === 0 && parseInt(data2.retCode) === 0) {
@@ -219,6 +242,8 @@ export default {
           this.corridorList.push(comprehensiveData[o]);
         }
       }
+
+      this.loading = 0;
     },
     requestCounter(url) {
       return defer(() => {
@@ -228,7 +253,7 @@ export default {
           terminal_code: 'T2'
         }
         return axios.get(url, {params})
-            .finally(() => _defer(() => this.loading = false));
+            .catch(() => _defer(() => this.loading = 0));
       });
     },
     requestCorridor(url) {
@@ -239,7 +264,7 @@ export default {
           terminal_code: 'T2'
         }
         return axios.get(url, {params})
-            .finally(() => _defer(() => this.loading = false));
+            .catch(() => _defer(() => this.loading = 0));
       });
     }
   }

@@ -51,8 +51,21 @@
     }
 
     h3 {
+      display: flex;
+      align-items: center;
+
       font-size: 22px;
       color: #3995ec;
+
+      svg {
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+
+        rect{
+          fill: #fff;
+        }
+      }
     }
 
     .list-wrap {

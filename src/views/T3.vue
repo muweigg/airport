@@ -8,7 +8,28 @@
       </transition>
 
       <div :class="['data-list', {open: openList}]">
-        <h3>{{ selected && selected.name }}</h3>
+        <h3>
+          {{ selected && selected.name }}
+          <transition name="fade">
+            <svg v-if="!!loading" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 30" xml:space="preserve">
+            <rect x="0" y="10" width="4" height="10" fill="#fff" opacity="0.2">
+              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
+              <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
+              <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
+            </rect>
+              <rect x="8" y="10" width="4" height="10" fill="#fff" opacity="0.2">
+              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate>
+                <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate>
+                <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate>
+            </rect>
+              <rect x="16" y="10" width="4" height="10" fill="#fff" opacity="0.2">
+              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate>
+                <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate>
+                <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate>
+            </rect>
+          </svg>
+          </transition>
+        </h3>
         <div class="list-wrap" v-disabled-rebound>
           <transition-group name="fade">
             <table v-show="corridorList.length > 0" :key="'corridorList'">
@@ -92,19 +113,19 @@ export default {
         {name: '值机岛3x', src: T3x, loaded: false, key: keyRange, type: 1},
       ],
       menuList: [
-        {name: '指廊E', type: 0, key: 'E'},
-        {name: '指廊F', type: 0, key: 'F'},
-        {name: '指廊G', type: 0, key: 'G'},
-        {name: '指廊H', type: 0, key: 'H'},
-        {name: '值机岛3A', type: 1, key: 'A'},
-        {name: '值机岛3B', type: 1, key: 'B'},
-        {name: '值机岛3C', type: 1, key: 'C'},
-        {name: '值机岛3D', type: 1, key: 'D'},
-        {name: '值机岛3E', type: 1, key: 'E'},
-        {name: '值机岛3F', type: 1, key: 'F'},
-        {name: '值机岛3G', type: 1, key: 'G'},
-        {name: '值机岛3H', type: 1, key: 'H'},
-        {name: '值机岛3J', type: 1, key: 'J'},
+        {name: '指廊 E', type: 0, key: 'E'},
+        {name: '指廊 F', type: 0, key: 'F'},
+        {name: '指廊 G', type: 0, key: 'G'},
+        {name: '指廊 H', type: 0, key: 'H'},
+        {name: '值机岛 3A', type: 1, key: 'A'},
+        {name: '值机岛 3B', type: 1, key: 'B'},
+        {name: '值机岛 3C', type: 1, key: 'C'},
+        {name: '值机岛 3D', type: 1, key: 'D'},
+        {name: '值机岛 3E', type: 1, key: 'E'},
+        {name: '值机岛 3F', type: 1, key: 'F'},
+        {name: '值机岛 3G', type: 1, key: 'G'},
+        {name: '值机岛 3H', type: 1, key: 'H'},
+        {name: '值机岛 3J', type: 1, key: 'J'},
       ],
       admission: false,
       rotateAdmission: false,
@@ -114,7 +135,7 @@ export default {
       subscriptions: null,
       corridorList: [],
       counterList: [],
-      loading: false
+      loading: 0
     }
   },
   beforeDestroy() {
@@ -131,12 +152,12 @@ export default {
       this.unsubscribeAllRequest();
 
       if (this.selected === menu) {
-        this.loading = false;
+        this.loading = 0;
         this.openList = false;
         return this.selected = null;
       }
 
-      this.loading = true;
+      this.loading = 1;
 
       this.$nextTick(() => _defer(() => {
         this.corridorList = [];
@@ -200,6 +221,8 @@ export default {
           this.counterList.push(comprehensiveData[o]);
         }
       }
+
+      this.loading = 0;
     },
     responseHandlerCorridor([data1, data2]) {
       if (parseInt(data1.retCode) === 0 && parseInt(data2.retCode) === 0) {
@@ -232,6 +255,8 @@ export default {
           this.corridorList.push(comprehensiveData[o]);
         }
       }
+
+      this.loading = 0;
     },
     requestCounter(url) {
       return defer(() => {
@@ -241,7 +266,7 @@ export default {
           terminal_code: 'T3'
         }
         return axios.get(url, {params})
-            .finally(() => _defer(() => this.loading = false));
+            .catch(() => _defer(() => this.loading = 0));
       });
     },
     requestCorridor(url) {
@@ -252,7 +277,7 @@ export default {
           terminal_code: 'T3'
         }
         return axios.get(url, {params})
-            .finally(() => _defer(() => this.loading = false));
+            .catch(() => _defer(() => this.loading = 0));
       });
     }
   }
