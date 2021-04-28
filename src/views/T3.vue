@@ -211,7 +211,6 @@ export default {
         for (let o of result1) {
           if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0) {
             const index = o.area_info.indexOf(this.selected.key) + 1;
-            console.log(o.area_info, index);
             comprehensiveData[o.area_info] = {
               counter: o.area_info.substr(index),
               checkin_passengernum: o.checkin_passengernum

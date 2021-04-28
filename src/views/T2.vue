@@ -196,18 +196,19 @@ export default {
         const result1 = data1.retJSON.result;
         const result2 = data2.retJSON.result;
         for (let o of result1) {
-          if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0)
+          if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0){
+            const index = o.area_info.indexOf(this.selected.key) + 1;
             comprehensiveData[o.area_info] = {
+              counter: o.area_info.substr(index),
               checkin_passengernum: o.checkin_passengernum
             }
+          }
         }
 
         for (let o of result2) {
           // if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0)
           if (comprehensiveData[o.area_info]) {
-            const index = o.area_info.indexOf(this.selected.key) + 1;
             Object.assign(comprehensiveData[o.area_info], {
-              counter: o.area_info.substr(index),
               bag_count: o.bag_count,
               bag_weight: o.bag_weight,
             });
