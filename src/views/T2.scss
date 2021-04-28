@@ -72,30 +72,29 @@
       flex: 1 0 0;
       overflow-y: auto;
       color: #fff;
-      margin-top: 30px;
+      margin-top: 15px;
 
       &.disabled-rebound {
-        margin-top: 29px;
+        margin-top: 14px;
         margin-bottom: -1px;
         padding: 1px 0;
-        transition: all .1s linear;
       }
 
       table {
         width: 100%;
         border-collapse: collapse;
         border-spacing: 0;
-        margin: 0 0 35px 0;
+        //margin: 0 0 35px 0;
 
-        tr:first-child {
-
-          td {
-            padding-top: 0;
-          }
-        }
+        //tr:first-child {
+        //
+        //  td {
+        //    padding-top: 0;
+        //  }
+        //}
 
         td {
-          padding-top: 30px;
+          padding: 15px 0;
         }
       }
     }
