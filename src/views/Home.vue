@@ -275,7 +275,7 @@ import API_URL from "@/js/API_URL";
 import config from '@/js/echartsConfig';
 import {sortBy} from 'lodash';
 
-let cancelTokenSource = axios.CancelToken.source();
+let cancelTokenSource;
 
 export default {
   name: 'Home',
@@ -350,6 +350,8 @@ export default {
     this.admission = true;
     this.$timer = interval(1000).subscribe(
         () => this.time = format(new Date(), 'HH:mm:ss'));
+
+    cancelTokenSource = axios.CancelToken.source();
 
     this.$nextTick(() => {
       this.initSwiper();
