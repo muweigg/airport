@@ -11,21 +11,31 @@
         <h3>
           {{ selected && selected.name }}
           <transition name="fade">
-            <svg v-if="!!loading" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 30" xml:space="preserve">
+            <svg v-if="!!loading" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                 viewBox="0 0 24 30" xml:space="preserve">
             <rect x="0" y="10" width="4" height="10" fill="#fff" opacity="0.2">
-              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
-              <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
-              <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s" repeatCount="indefinite"></animate>
+              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s"
+                       repeatCount="indefinite"></animate>
+              <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s"
+                       repeatCount="indefinite"></animate>
+              <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s"
+                       repeatCount="indefinite"></animate>
             </rect>
-            <rect x="8" y="10" width="4" height="10" fill="#fff" opacity="0.2">
-              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate>
-              <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate>
-              <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s" repeatCount="indefinite"></animate>
+              <rect x="8" y="10" width="4" height="10" fill="#fff" opacity="0.2">
+              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s" dur="0.6s"
+                       repeatCount="indefinite"></animate>
+                <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s"
+                         repeatCount="indefinite"></animate>
+                <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s"
+                         repeatCount="indefinite"></animate>
             </rect>
-            <rect x="16" y="10" width="4" height="10" fill="#fff" opacity="0.2">
-              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate>
-              <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate>
-              <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s" repeatCount="indefinite"></animate>
+              <rect x="16" y="10" width="4" height="10" fill="#fff" opacity="0.2">
+              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s"
+                       repeatCount="indefinite"></animate>
+                <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s"
+                         repeatCount="indefinite"></animate>
+                <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s"
+                         repeatCount="indefinite"></animate>
             </rect>
           </svg>
           </transition>
@@ -194,11 +204,11 @@ export default {
 
         for (let o of result2) {
           if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0)
-            comprehensiveData[o.area_info] = {
+            Object.assign(comprehensiveData[o.area_info], {
               counter: o.area_info.substr(2),
               bag_count: o.bag_count,
               bag_weight: o.bag_weight,
-            }
+            });
         }
 
         const keys = Object.keys(comprehensiveData).sort();
@@ -225,14 +235,10 @@ export default {
         }
 
         for (let o of result2) {
-          if (comprehensiveData[o.gate_code]) {
-            comprehensiveData[o.gate_code]['next_flight_no'] = o.next_flight_no;
-          } else {
-            comprehensiveData[o.gate_code] = {
-              gate_code: o.gate_code,
-              next_flight_no: o.next_flight_no
-            }
-          }
+          comprehensiveData[o.gate_code] = Object.assign({}, comprehensiveData[o.gate_code], {
+            gate_code: o.gate_code,
+            next_flight_no: o.next_flight_no
+          });
         }
 
         const keys = Object.keys(comprehensiveData).sort();

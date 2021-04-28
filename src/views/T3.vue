@@ -207,16 +207,15 @@ export default {
 
         for (let o of result2) {
           if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0)
-            comprehensiveData[o.area_info] = {
+            Object.assign(comprehensiveData[o.area_info], {
               counter: o.area_info.substr(2),
               bag_count: o.bag_count,
               bag_weight: o.bag_weight,
-            }
+            });
         }
 
         const keys = Object.keys(comprehensiveData).sort();
 
-        // this.counterList = [];
         for (let o of keys) {
           this.counterList.push(comprehensiveData[o]);
         }
@@ -238,14 +237,10 @@ export default {
         }
 
         for (let o of result2) {
-          if (comprehensiveData[o.gate_code]) {
-            comprehensiveData[o.gate_code]['next_flight_no'] = o.next_flight_no;
-          } else {
-            comprehensiveData[o.gate_code] = {
-              gate_code: o.gate_code,
-              next_flight_no: o.next_flight_no
-            }
-          }
+          comprehensiveData[o.gate_code] = Object.assign({}, comprehensiveData[o.gate_code], {
+            gate_code: o.gate_code,
+            next_flight_no: o.next_flight_no
+          });
         }
 
         const keys = Object.keys(comprehensiveData).sort();
