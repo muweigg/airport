@@ -58,7 +58,7 @@
                 <td>柜台: <span class="c1">{{ item.counter || '-' }}</span></td>
                 <td>人数: <span class="c1">{{ item.checkin_passengernum || '' }}</span></td>
                 <td>件数: <span class="c2">{{ item.bag_count || '-' }}</span></td>
-                <td>重量: <span class="c3">{{ item.bag_weight || '-' }} KG</span></td>
+                <td>重量: <span class="c3">{{ `${item.bag_weight} KG` || '-' }}</span></td>
               </tr>
               </tbody>
             </table>
