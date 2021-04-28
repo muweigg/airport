@@ -13,31 +13,31 @@
           <transition name="fade">
             <svg v-if="!!loading" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                  viewBox="0 0 24 30" xml:space="preserve">
-            <rect x="0" y="10" width="4" height="10" fill="#fff" opacity="0.2">
-              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s"
-                       repeatCount="indefinite"></animate>
-              <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s"
-                       repeatCount="indefinite"></animate>
-              <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s"
-                       repeatCount="indefinite"></animate>
-            </rect>
+              <rect x="0" y="10" width="4" height="10" fill="#fff" opacity="0.2">
+                <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s"
+                         repeatCount="indefinite"></animate>
+                <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s"
+                         repeatCount="indefinite"></animate>
+                <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s"
+                         repeatCount="indefinite"></animate>
+              </rect>
               <rect x="8" y="10" width="4" height="10" fill="#fff" opacity="0.2">
-              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s" dur="0.6s"
-                       repeatCount="indefinite"></animate>
+                <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s" dur="0.6s"
+                         repeatCount="indefinite"></animate>
                 <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s"
                          repeatCount="indefinite"></animate>
                 <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s"
                          repeatCount="indefinite"></animate>
-            </rect>
+              </rect>
               <rect x="16" y="10" width="4" height="10" fill="#fff" opacity="0.2">
-              <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s"
-                       repeatCount="indefinite"></animate>
+                <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s"
+                         repeatCount="indefinite"></animate>
                 <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s"
                          repeatCount="indefinite"></animate>
                 <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s"
                          repeatCount="indefinite"></animate>
-            </rect>
-          </svg>
+              </rect>
+            </svg>
           </transition>
         </h3>
         <div class="list-wrap" v-disabled-rebound>
@@ -109,6 +109,8 @@ import {format} from "date-fns";
 import {delay, defer as _defer} from 'lodash';
 import {defer, combineLatest} from 'rxjs';
 
+let cancelTokenSource = axios.CancelToken.source();
+
 export default {
   name: "T2",
   data() {
@@ -137,16 +139,23 @@ export default {
   },
   beforeDestroy() {
     this.unsubscribeAllRequest();
+    cancelTokenSource.cancel('');
   },
   mounted() {
     this.admission = true;
   },
   methods: {
     goBack() {
+      if (window.history.length <= 2) {
+        return this.$router.replace({name: 'Home'});
+      }
       this.$router.back();
     },
     switchSelected(menu) {
       this.unsubscribeAllRequest();
+
+      cancelTokenSource.cancel('');
+      cancelTokenSource = axios.CancelToken.source();
 
       if (this.selected === menu) {
         this.loading = 0;
@@ -154,9 +163,8 @@ export default {
         return this.selected = null;
       }
 
-      this.loading = 1;
-
       this.$nextTick(() => _defer(() => {
+        this.loading = 1;
         this.corridorList = [];
         this.counterList = [];
         this.selected = menu;
@@ -191,12 +199,14 @@ export default {
       if (this.subscriptions) this.subscriptions.unsubscribe();
     },
     responseHandlerCounter([data1, data2]) {
+      if (!data1 || !data2) return;
+
       if (parseInt(data1.retCode) === 0 && parseInt(data2.retCode) === 0) {
         const comprehensiveData = {};
         const result1 = data1.retJSON.result;
         const result2 = data2.retJSON.result;
         for (let o of result1) {
-          if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0){
+          if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0) {
             const index = o.area_info.indexOf(this.selected.key) + 1;
             comprehensiveData[o.area_info] = {
               counter: o.area_info.substr(index),
@@ -225,6 +235,8 @@ export default {
       this.loading = 0;
     },
     responseHandlerCorridor([data1, data2]) {
+      if (!data1 || !data2) return;
+
       if (parseInt(data1.retCode) === 0 && parseInt(data2.retCode) === 0) {
         const comprehensiveData = {};
         const result1 = data1.retJSON.result;
@@ -260,8 +272,11 @@ export default {
           level_flag: 2,
           terminal_code: 'T2'
         }
-        return axios.get(url, {params})
-            .catch(() => _defer(() => this.loading = 0));
+        return axios.get(url, {params, cancelToken: cancelTokenSource.token})
+            .catch((thrown) => {
+              this.loading = 0
+              axios.isCancel(thrown) && console.log('Request canceled', thrown.message)
+            });
       });
     },
     requestCorridor(url) {
@@ -271,8 +286,11 @@ export default {
           corridor_code: this.selected.key,
           terminal_code: 'T2'
         }
-        return axios.get(url, {params})
-            .catch(() => _defer(() => this.loading = 0));
+        return axios.get(url, {params, cancelToken: cancelTokenSource.token})
+            .catch((thrown) => {
+              this.loading = 0
+              axios.isCancel(thrown) && console.log('Request canceled', thrown.message)
+            });
       });
     }
   }

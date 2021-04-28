@@ -1,8 +1,8 @@
 <template>
   <transition name="fade">
-    <div class="home" v-disabled-rebound v-show="admission">
+    <div class="home" v-show="admission">
       <div class="top">航站楼运行总览</div>
-<!--      <div class="logo">LOGO</div>-->
+      <!--      <div class="logo">LOGO</div>-->
       <div class="date-time">
         <div>{{ date }}</div>
         <div>{{ time }}</div>
@@ -265,8 +265,8 @@
 <script>
 import * as echarts from 'echarts';
 import {format, addDays} from "date-fns";
-import {timer, interval, defer} from "rxjs";
-import {concatMap} from 'rxjs/operators';
+import {timer, interval, defer, of, empty} from "rxjs";
+import {concatMap, catchError} from 'rxjs/operators';
 import {TweenLite, Expo} from 'gsap';
 import ProgressCircle from '@/components/progress-circle.vue';
 import Swiper from 'swiper';
@@ -274,6 +274,8 @@ import axios from '@/js/axios';
 import API_URL from "@/js/API_URL";
 import config from '@/js/echartsConfig';
 import {sortBy} from 'lodash';
+
+let cancelTokenSource = axios.CancelToken.source();
 
 export default {
   name: 'Home',
@@ -342,6 +344,7 @@ export default {
   beforeDestroy() {
     this.$timer && !this.$timer.closed && this.$timer.unsubscribe();
     this.unsubscribeAllRequestTimer();
+    cancelTokenSource.cancel('');
   },
   mounted() {
     this.admission = true;
@@ -427,6 +430,8 @@ export default {
     },
     // 机场累计接待旅客人数
     responseHandler1(data) {
+      if (!data) return;
+
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
 
@@ -458,6 +463,8 @@ export default {
     },
     // 订座 - 预计明日 进/离 港人数
     responseHandler2(data) {
+      if (!data) return;
+
       const properties = ['inbound', 'outbound'];
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result;
@@ -473,6 +480,8 @@ export default {
     },
     // 值机 - 自助率 & 今日累计
     responseHandler3(data) {
+      if (!data) return;
+
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
         this.checkIn.cussRate = result.cussrate || 0;
@@ -481,6 +490,8 @@ export default {
     },
     // 值机 - 旅客值机方式统计 - 按值机方式
     responseHandler4(data) {
+      if (!data) return;
+
       const properties = {
         1: 'counter',
         2: 'cuss',
@@ -500,6 +511,8 @@ export default {
     },
     // 值机 - 旅客值机人数统计 - 按人群类别
     responseHandler5(data) {
+      if (!data) return;
+
       const properties = {
         1: 'special',
         2: 'conventional'
@@ -514,6 +527,8 @@ export default {
     },
     // 安检
     responseHandler6(data) {
+      if (!data) return;
+
       if (parseInt(data.retCode) === 0) {
         this.check.checked = 0;
         let checked = 0;
@@ -538,6 +553,8 @@ export default {
     },
     // 登机 - 旅客值机人数统计
     responseHandler7(data) {
+      if (!data) return;
+
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
 
@@ -564,6 +581,8 @@ export default {
     },
     // 行李 - 开包
     responseHandler8(data) {
+      if (!data) return;
+
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
 
@@ -581,6 +600,8 @@ export default {
     },
     // 行李 - 件数重量
     responseHandler9(data) {
+      if (!data) return;
+
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
 
@@ -599,6 +620,8 @@ export default {
     },
     // 进港
     responseHandler10(data) {
+      if (!data) return;
+
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
 
@@ -623,7 +646,8 @@ export default {
               exec_date: execDate || format(new Date(), 'yyyyMMdd'),
               terminal_code: this.getTerminalCode()
             }
-            return axios.get(url, {params});
+            return axios.get(url, {params, cancelToken: cancelTokenSource.token})
+                .catch((thrown) => axios.isCancel(thrown) && console.log('Request canceled', thrown.message));
           }))
       );
     },
@@ -637,7 +661,8 @@ export default {
               flag: 2,
               terminal_code: this.getTerminalCode()
             }
-            return axios.get(url, {params});
+            return axios.get(url, {params, cancelToken: cancelTokenSource.token})
+                .catch((thrown) => axios.isCancel(thrown) && console.log('Request canceled', thrown.message));
           }))
       );
     },
@@ -648,6 +673,8 @@ export default {
   },
   watch: {
     scene() {
+      cancelTokenSource.cancel('');
+      cancelTokenSource = axios.CancelToken.source();
       this.unsubscribeAllRequestTimer();
       this.subscribeAllRequestTimer();
     }
