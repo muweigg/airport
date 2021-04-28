@@ -10,15 +10,31 @@
       <div :class="['data-list', {open: openList}]">
         <h3>{{ selected && selected.name }}</h3>
         <div class="list-wrap" v-disabled-rebound>
-          <table>
-            <tbody>
-            <tr v-for="item in list">
-              <td>值机人数: <span class="c1">{{ item.checkin_passengernum }}</span></td>
-              <td>行李件数: <span class="c2">{{ item.bag_count }}</span></td>
-              <td>行李重量: <span class="c3">{{ item.bag_weight }}KG</span></td>
-            </tr>
-            </tbody>
-          </table>
+          <transition-group name="fade">
+            <table v-show="corridorList.length > 0" key="corridorList">
+              <tbody>
+              <tr v-for="item in corridorList">
+                <td>登机口: <span class="c1">{{ item.gate_code || '无' }}</span></td>
+                <td>航班号: <span class="c1">{{ item.flight_no || '无' }}</span></td>
+                <td>人数: <span class="c2">{{ item.checkedin_num || '无' }}</span></td>
+                <td>下一班: <span class="c3">{{ item.next_flight_no || '无' }}</span></td>
+              </tr>
+              </tbody>
+            </table>
+            <table v-show="counterList.length > 0" key="counterList'">
+              <tbody>
+              <tr v-for="item in counterList">
+                <td>柜台: <span class="c1">{{ item.counter || 0 }}</span></td>
+                <td>人数: <span class="c1">{{ item.checkin_passengernum || 0 }}</span></td>
+                <td>件数: <span class="c2">{{ item.bag_count || 0 }}</span></td>
+                <td>重量: <span class="c3">{{ item.bag_weight || 0 }}KG</span></td>
+              </tr>
+              </tbody>
+            </table>
+            <div v-show="!loading && corridorList.length === 0 && counterList.length === 0" :key="'nothing'">
+              未查询到 <span class="c3">{{ selected && selected.name }}</span> 的数据
+            </div>
+          </transition-group>
         </div>
       </div>
 
@@ -59,7 +75,7 @@ import T2F from '@/assets/images/T2/2F.png';
 import axios from '@/js/axios';
 import API_URL from "@/js/API_URL";
 import {format} from "date-fns";
-import {delay} from 'lodash';
+import {delay, defer as _defer} from 'lodash';
 import {defer, combineLatest} from 'rxjs';
 
 export default {
@@ -83,7 +99,9 @@ export default {
       openList: false,
       subscribeable: null,
       subscriptions: null,
-      list: []
+      corridorList: [],
+      counterList: [],
+      loading: false
     }
   },
   beforeDestroy() {
@@ -100,14 +118,20 @@ export default {
       this.unsubscribeAllRequest();
 
       if (this.selected === menu) {
+        this.loading = false;
         this.openList = false;
         return this.selected = null;
       }
 
-      this.list = [];
-      this.selected = menu;
-      this.initAllRequest();
-      this.subscribeAllRequest();
+      this.loading = true;
+
+      this.$nextTick(() => _defer(() => {
+        this.corridorList = [];
+        this.counterList = [];
+        this.selected = menu;
+        this.initAllRequest();
+        this.subscribeAllRequest();
+      }));
     },
     switchOver() {
       delay(() => this.openList = true, 300);
@@ -150,6 +174,7 @@ export default {
         for (let o of result2) {
           if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0)
             comprehensiveData[o.area_info] = {
+              counter: o.area_info.substr(2),
               bag_count: o.bag_count,
               bag_weight: o.bag_weight,
             }
@@ -157,40 +182,42 @@ export default {
 
         const keys = Object.keys(comprehensiveData).sort();
 
-        this.list = [];
+        this.counterList = [];
         for (let o of keys) {
-          this.list.push(comprehensiveData[o]);
+          this.counterList.push(comprehensiveData[o]);
         }
       }
     },
     responseHandlerCorridor([data1, data2]) {
-      console.log(data1, data2);
-
       if (parseInt(data1.retCode) === 0 && parseInt(data2.retCode) === 0) {
-        // const comprehensiveData = {};
-        // const result1 = data1.retJSON.result;
-        // const result2 = data2.retJSON.result;
-        // for (let o of result1) {
-        //   if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0)
-        //     comprehensiveData[o.area_info] = {
-        //       checkin_passengernum: o.checkin_passengernum
-        //     }
-        // }
-        //
-        // for (let o of result2) {
-        //   if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0)
-        //     comprehensiveData[o.area_info] = {
-        //       bag_count: o.bag_count,
-        //       bag_weight: o.bag_weight,
-        //     }
-        // }
-        //
-        // const keys = Object.keys(comprehensiveData).sort();
-        //
-        // this.list = [];
-        // for (let o of keys) {
-        //   this.list.push(comprehensiveData[o]);
-        // }
+        const comprehensiveData = {};
+        const result1 = data1.retJSON.result;
+        const result2 = data2.retJSON.result;
+        for (let o of result1) {
+          comprehensiveData[o.gate_code] = {
+            gate_code: o.gate_code,
+            flight_no: o.flight_no,
+            checkedin_num: o.checkedin_num
+          }
+        }
+
+        for (let o of result2) {
+          if (comprehensiveData[o.gate_code]) {
+            comprehensiveData[o.gate_code]['next_flight_no'] = o.next_flight_no;
+          } else {
+            comprehensiveData[o.gate_code] = {
+              gate_code: o.gate_code,
+              next_flight_no: o.next_flight_no
+            }
+          }
+        }
+
+        const keys = Object.keys(comprehensiveData).sort();
+
+        this.corridorList = [];
+        for (let o of keys) {
+          this.corridorList.push(comprehensiveData[o]);
+        }
       }
     },
     requestCounter(url) {
@@ -200,7 +227,8 @@ export default {
           level_flag: 2,
           terminal_code: 'T2'
         }
-        return axios.get(url, {params});
+        return axios.get(url, {params})
+            .finally(() => _defer(() => this.loading = false));
       });
     },
     requestCorridor(url) {
@@ -210,7 +238,8 @@ export default {
           corridor_code: this.selected.key,
           terminal_code: 'T2'
         }
-        return axios.get(url, {params});
+        return axios.get(url, {params})
+            .finally(() => _defer(() => this.loading = false));
       });
     }
   }
