@@ -14,6 +14,13 @@ module.exports = {
     }
   },
   chainWebpack: (config) => {
+    config
+      .plugin('html')
+      .tap(args => {
+        args[0].title = '航站楼运行总览'
+        return args
+      });
+
     !isDev && config.optimization.minimizer('terser').tap((args) => {
       args[0].terserOptions.compress.drop_console = !isDev;
       // args[0].terserOptions.compress.pure_funcs = ['console.log'];
