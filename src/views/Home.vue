@@ -1,7 +1,7 @@
 <template>
   <transition name="fade">
     <div class="home" v-disabled-rebound v-show="admission">
-      <div class="top">航站楼运行总览-旅客</div>
+      <div class="top">航站楼运行总览</div>
       <div class="logo">LOGO</div>
       <div class="date-time">
         <div>{{ date }}</div>
