@@ -32,8 +32,8 @@ export default {
     el.addEventListener('touchstart', () => pos(el))
 
     el.addEventListener('touchmove', (e) => {
-      if (el.offsetHeight < el.scrollHeight) {
-        e._isScroller = true
+      if (el.offsetHeight < el.scrollHeight || document.body.offsetHeight < el.scrollHeight) {
+        return e._isScroller = true
       } else {
         e.preventDefault()
       }
