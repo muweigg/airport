@@ -45,20 +45,20 @@
             <table v-show="corridorList.length > 0" key="corridorList">
               <tbody>
               <tr v-for="item in corridorList">
-                <td>登机口: <span class="c1">{{ item.gate_code || '无' }}</span></td>
-                <td>航班号: <span class="c1">{{ item.flight_no || '无' }}</span></td>
-                <td>人数: <span class="c2">{{ item.checkedin_num || '无' }}</span></td>
-                <td>下一班: <span class="c3">{{ item.next_flight_no || '无' }}</span></td>
+                <td>登机口: <span class="c1">{{ item.gate_code || '-' }}</span></td>
+                <td>航班号: <span class="c1">{{ item.flight_no || '-' }}</span></td>
+                <td>人数: <span class="c2">{{ item.checkedin_num || '-' }}</span></td>
+                <td>下一班: <span class="c3">{{ item.next_flight_no || '-' }}</span></td>
               </tr>
               </tbody>
             </table>
             <table v-show="counterList.length > 0" key="counterList'">
               <tbody>
               <tr v-for="item in counterList">
-                <td>柜台: <span class="c1">{{ item.counter || 0 }}</span></td>
-                <td>人数: <span class="c1">{{ item.checkin_passengernum || 0 }}</span></td>
-                <td>件数: <span class="c2">{{ item.bag_count || 0 }}</span></td>
-                <td>重量: <span class="c3">{{ item.bag_weight || 0 }}KG</span></td>
+                <td>柜台: <span class="c1">{{ item.counter || '-' }}</span></td>
+                <td>人数: <span class="c1">{{ item.checkin_passengernum || '' }}</span></td>
+                <td>件数: <span class="c2">{{ item.bag_count || '-' }}</span></td>
+                <td>重量: <span class="c3">{{ item.bag_weight || '-' }} KG</span></td>
               </tr>
               </tbody>
             </table>
@@ -203,17 +203,19 @@ export default {
         }
 
         for (let o of result2) {
-          if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0)
+          // if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0)
+          if (comprehensiveData[o.area_info]) {
+            const index = o.area_info.indexOf(this.selected.key) + 1;
             Object.assign(comprehensiveData[o.area_info], {
-              counter: o.area_info.substr(2),
+              counter: o.area_info.substr(index),
               bag_count: o.bag_count,
               bag_weight: o.bag_weight,
             });
+          }
         }
 
         const keys = Object.keys(comprehensiveData).sort();
 
-        this.counterList = [];
         for (let o of keys) {
           this.counterList.push(comprehensiveData[o]);
         }
@@ -243,7 +245,6 @@ export default {
 
         const keys = Object.keys(comprehensiveData).sort();
 
-        this.corridorList = [];
         for (let o of keys) {
           this.corridorList.push(comprehensiveData[o]);
         }
