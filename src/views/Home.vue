@@ -486,7 +486,7 @@ export default {
 
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
-        this.checkIn.cussRate = result.cussrate || 0;
+        this.checkIn.cussRate = (parseFloat(result.cussrate) * 100) || 0;
         this.checkIn.today = result.all_checkinnum || 0;
       }
     },
@@ -595,7 +595,7 @@ export default {
         });
 
         TweenLite.to(this.baggage, 2, {
-          checkRate: parseFloat(result.bag_checkrate) || 0,
+          checkRate: (parseFloat(result.bag_checkrate) * 100) || 0,
           ease: Expo.easeOut
         });
       }
