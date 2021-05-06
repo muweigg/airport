@@ -30,9 +30,3 @@ window.addEventListener('resize', () => {
 const event = document.createEvent('Event')
 event.initEvent('resize', true, true)
 window.dispatchEvent(event)
-
-document.body.addEventListener('touchmove', function(evt) {
-  if(!evt._isScroller) {
-    evt.preventDefault()
-  }
-}, {passive: false})

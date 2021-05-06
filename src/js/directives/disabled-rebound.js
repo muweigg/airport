@@ -6,11 +6,13 @@ const iOS = md.os()
 
 const platform = {'iOS': true}
 
-// document.body.addEventListener('touchmove', (evt) => {
-//   if (!evt._isScroller) {
-//     evt.preventDefault()
-//   }
-// }, {passive: false})
+if (platform[iOS]) {
+  document.body.addEventListener('touchmove', function(evt) {
+    if(!evt._isScroller) {
+      evt.preventDefault()
+    }
+  }, {passive: false})
+}
 
 function pos(el) {
   const top = el.scrollTop
