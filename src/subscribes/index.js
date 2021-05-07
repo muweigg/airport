@@ -1,7 +1,6 @@
-import {BehaviorSubject} from 'rxjs'
-import {distinctUntilChanged} from 'rxjs/operators'
+import {BehaviorSubject, timer} from 'rxjs'
 
 const isPortrait = window.matchMedia("(orientation: portrait)").matches
-export const screen = new BehaviorSubject(isPortrait).pipe(distinctUntilChanged())
+export const screen = new BehaviorSubject(isPortrait)
 window.addEventListener('resize',
   () => screen.next(window.matchMedia("(orientation: portrait)").matches))

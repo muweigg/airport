@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import {screen} from './subscribes'
+import {timer} from "rxjs"
 
 import '@/js/directives'
 import '@/assets/css/common.scss'
@@ -20,13 +21,15 @@ screen.subscribe(isPortrait => {
     vh = window[!isPortrait ? 'innerHeight' : 'innerWidth']
   document.documentElement.style.setProperty('--rvw', `${vw}px`)
   document.documentElement.style.setProperty('--rvh', `${vh}px`)
-});
+})
 
 window.addEventListener('resize', () => {
   const vh = window.innerHeight
   document.documentElement.style.setProperty('--vh', `${vh}px`)
-});
+})
 
-const event = document.createEvent('Event')
-event.initEvent('resize', true, true)
-window.dispatchEvent(event)
+timer(0, 100).subscribe(() => {
+  const event = document.createEvent('Event')
+  event.initEvent('resize', true, true)
+  window.dispatchEvent(event)
+})

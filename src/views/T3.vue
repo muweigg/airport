@@ -79,7 +79,7 @@
             <div>总重量：<span class="c3">{{ `${statistics.weight} KG` || '-' }}</span></div>
           </div>
         </transition-group>
-        <a href="javascript:" class="close" @click="openList = false, selected = null">&#10005;</a>
+        <a href="javascript:" class="close" @click="openList = false">&#10005;</a>
       </div>
 
       <div class="wrap" :class="{scale: openList}">
