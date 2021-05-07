@@ -21,10 +21,13 @@ module.exports = {
         return args
       });
 
-    !isDev && config.optimization.minimizer('terser').tap((args) => {
-      args[0].terserOptions.compress.drop_console = !isDev;
-      // args[0].terserOptions.compress.pure_funcs = ['console.log'];
-      return args
-    });
+    if (process.env.NODE_ENV === 'production') {
+      !isDev && config.optimization.minimizer('terser').tap((args) => {
+        args[0].terserOptions.output = {comments: false};
+        args[0].terserOptions.compress.drop_console = true;
+        // args[0].terserOptions.compress.pure_funcs = ['console.log'];
+        return args
+      });
+    }
   }
 }

@@ -17,7 +17,7 @@
           <div class="num"><strong>{{ accumulative.total[3] }}</strong></div>
           <div class="wrap">
             <strong>万人</strong>
-            <span>截至日：{{ date }}</span>
+            <span>截至日：{{ deadline }}</span>
           </div>
         </div>
 
@@ -141,7 +141,7 @@
             <div>{{ checkIn.special }}</div>
           </li>
           <li class="normal">
-            <div>常规</div>
+            <div>常旅</div>
             <div>
               <div class="progress-rate"
                    :style="`width: ${checkIn.conventional / 60000 * 100}%`"></div>
@@ -156,7 +156,7 @@
           安检
           <div>
             <strong>过检人数：<span>{{ check.checked }}</span></strong>
-            <strong>排队人数：<span>0</span></strong>
+            <!--<strong>排队人数：<span>0</span></strong>-->
           </div>
         </h3>
 
@@ -264,7 +264,7 @@
 
 <script>
 import * as echarts from 'echarts';
-import {format, addDays} from "date-fns";
+import {format, addDays, subDays} from "date-fns";
 import {timer, interval, defer, of, empty} from "rxjs";
 import {concatMap, catchError} from 'rxjs/operators';
 import {TweenLite, Expo} from 'gsap';
@@ -284,6 +284,7 @@ export default {
     return {
       admission: false,
       date: format(new Date(), 'yyyy-MM-dd'),
+      deadline: format(subDays(new Date(), 1), 'yyyy-MM-dd'),
       time: format(new Date(), 'HH:mm:ss'),
       scene: 0,
       swiper: null,
@@ -397,7 +398,7 @@ export default {
     initAllRequestTimer() {
       this.subscribeable = [
         // 顶部统计
-        this.requestTimer(API_URL.PASSENGER_NUM_IN_YEAR),
+        this.requestTimer(API_URL.PASSENGER_NUM_IN_YEAR, format(subDays(Date.now(), 1), 'yyyyMMdd')),
         // 订座
         this.requestTimer(API_URL.BOOKED_NUM, format(addDays(Date.now(), 1), 'yyyyMMdd')),
         // 值机
@@ -486,7 +487,8 @@ export default {
 
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
-        this.checkIn.cussRate = (parseFloat(result.cussrate) * 100) || 0;
+        const cussRate = Math.floor((result.cussrate || 0) * Math.pow(10, 4)) * Math.pow(10, -2);
+        this.checkIn.cussRate = Number(cussRate.toFixed(2));
         this.checkIn.today = result.all_checkinnum || 0;
       }
     },
@@ -588,14 +590,16 @@ export default {
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
 
+
         TweenLite.to(this.baggage, 2, {
           checkNum: parseInt(result.bag_checknum) || 0,
           snap: 'checkNum',
           ease: Expo.easeOut
         });
 
+        const checkRate = Math.floor((result.bag_checkrate || 0) * Math.pow(10, 4)) * Math.pow(10, -2);
         TweenLite.to(this.baggage, 2, {
-          checkRate: (parseFloat(result.bag_checkrate) * 100) || 0,
+          checkRate: Number(checkRate.toFixed(2)),
           ease: Expo.easeOut
         });
       }
