@@ -42,7 +42,7 @@
         </h3>
         <div class="list-wrap" v-disabled-rebound>
           <transition-group name="fade">
-            <table v-show="corridorList.length > 0" :key="'corridorList'">
+            <table v-show="corridorList.length > 0" key="corridorList">
               <tbody>
               <tr v-for="item in corridorList">
                 <td>登机口: <span class="c1">{{ item.gate_code || '-' }}</span></td>
@@ -52,7 +52,7 @@
               </tr>
               </tbody>
             </table>
-            <table v-show="counterList.length > 0" :key="'counterList'">
+            <table v-show="counterList.length > 0" key="counterList">
               <tbody>
               <tr v-for="item in counterList">
                 <td>柜台: <span class="c1">{{ item.counter || '-' }}</span></td>
@@ -67,6 +67,19 @@
             未查询到 <span class="c3">{{ selected && selected.name }}</span> 的数据
           </div>
         </div>
+        <transition-group name="fade">
+          <div class="total-wrap" v-show="corridorList.length > 0" key="corridorList">
+            <div>
+              待登机总人数：<span class="c2">{{ statistics.checkedIn || '-' }}</span>
+            </div>
+          </div>
+          <div class="total-wrap" v-show="counterList.length > 0" key="counterList">
+            <div>值机总人数：<span class="c1">{{ statistics.passenger || '-' }}</span></div>
+            <div>总件数：<span class="c2">{{ statistics.count || '-' }}</span></div>
+            <div>总重量：<span class="c3">{{ `${statistics.weight} KG` || '-' }}</span></div>
+          </div>
+        </transition-group>
+        <a href="javascript:" class="close" @click="openList = false, selected = null">&#10005;</a>
       </div>
 
       <div class="wrap" :class="{scale: openList}">
@@ -147,7 +160,13 @@ export default {
       subscriptions: null,
       corridorList: [],
       counterList: [],
-      loading: 0
+      loading: 0,
+      statistics: {
+        checkedIn: 0,
+        passenger: 0,
+        count: 0,
+        weight: 0,
+      }
     }
   },
   beforeDestroy() {
@@ -181,6 +200,12 @@ export default {
         this.corridorList = [];
         this.counterList = [];
         this.selected = menu;
+        this.statistics = {
+          checkedIn: 0,
+          passenger: 0,
+          count: 0,
+          weight: 0,
+        }
         this.initAllRequest();
         this.subscribeAllRequest();
       }));
@@ -225,6 +250,7 @@ export default {
               counter: o.area_info.substr(index),
               checkin_passengernum: o.checkin_passengernum
             }
+            this.statistics.passenger = Math.floor(this.statistics.passenger + (parseInt(o.checkin_passengernum) || 0));
           }
         }
 
@@ -235,6 +261,8 @@ export default {
               bag_count: o.bag_count,
               bag_weight: o.bag_weight,
             });
+            this.statistics.count = Math.floor(this.statistics.count + (parseInt(o.bag_count) || 0));
+            this.statistics.weight = Math.floor(this.statistics.weight + (parseInt(o.bag_weight) || 0));
           }
         }
 
@@ -260,6 +288,8 @@ export default {
             flight_no: o.flight_no,
             checkedin_num: o.checkedin_num
           }
+
+          this.statistics.checkedIn = Math.floor(this.statistics.checkedIn + (parseInt(o.checkedin_num) || 0));
         }
 
         for (let o of result2) {

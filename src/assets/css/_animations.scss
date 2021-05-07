@@ -7,6 +7,15 @@
   transition: opacity .5s;
 }
 
+// 路由切换 淡入 / 淡出
+.fade-in-enter {
+  opacity: 0;
+}
+
+.fade-in-enter-active {
+  transition: opacity .5s;
+}
+
 // 向左滑入淡入 / 向右滑出淡出
 .slide-enter {
   opacity: 0;
