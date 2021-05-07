@@ -193,6 +193,8 @@ export default {
         this.loading = 0;
         this.openList = false;
         return this.selected = null;
+      } else if (this.selected && this.selected.type === 1 && menu.type === 1) {
+        this.openList = true;
       }
 
       this.$nextTick(() => _defer(() => {
