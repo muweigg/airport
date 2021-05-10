@@ -85,13 +85,9 @@
       <div class="wrap" :class="{scale: openList}">
         <transition-group name="slide"
                           v-on:after-enter="switchOver">
-          <div class="check-in-island" v-for="item in items.slice(0, 4)" :key="item.name"
-               v-show="selected && item.loaded && item.key[selected.key] && item.type === selected.type">
+          <div class="check-in-island" v-for="item in menuList" :key="item.name"
+               v-show="item.loaded && selected === item">
             <img :src="item.src" alt="" @load="item.loaded = true">
-          </div>
-          <div class="check-in-island" :key="5"
-               v-show="selected && items[4].loaded && items[4].key[selected.key] && items[4].type === selected.type">
-            <img :src="items[4].src" alt="" @load="items[4].loaded = true">
           </div>
         </transition-group>
       </div>
@@ -114,7 +110,15 @@ import AC3E from '@/assets/images/T3/ac3E.png';
 import AC3F from '@/assets/images/T3/ac3F.png';
 import AC3G from '@/assets/images/T3/ac3G.png';
 import AC3H from '@/assets/images/T3/ac3H.png';
-import T3x from '@/assets/images/T3/3x.png';
+import T3A from '@/assets/images/T3/3A.png';
+import T3B from '@/assets/images/T3/3B.png';
+import T3C from '@/assets/images/T3/3C.png';
+import T3D from '@/assets/images/T3/3D.png';
+import T3E from '@/assets/images/T3/3E.png';
+import T3F from '@/assets/images/T3/3F.png';
+import T3G from '@/assets/images/T3/3G.png';
+import T3H from '@/assets/images/T3/3H.png';
+import T3J from '@/assets/images/T3/3J.png';
 
 import axios from '@/js/axios';
 import API_URL from "@/js/API_URL";
@@ -124,33 +128,24 @@ import {defer, combineLatest} from 'rxjs';
 
 let cancelTokenSource = axios.CancelToken.source();
 
-const keyRange = {'A': 1, 'B': 1, 'C': 1, 'D': 1, 'E': 1, 'F': 1, 'G': 1, 'H': 1, 'J': 1}
-
 export default {
   name: "T3",
   data() {
     return {
-      items: [
-        {name: '指廊E', src: AC3E, loaded: false, key: {E: 1}, type: 0},
-        {name: '指廊F', src: AC3F, loaded: false, key: {F: 1}, type: 0},
-        {name: '指廊G', src: AC3G, loaded: false, key: {G: 1}, type: 0},
-        {name: '指廊H', src: AC3H, loaded: false, key: {H: 1}, type: 0},
-        {name: '值机岛3x', src: T3x, loaded: false, key: keyRange, type: 1},
-      ],
       menuList: [
-        {name: '指廊 E', type: 0, key: 'E'},
-        {name: '指廊 F', type: 0, key: 'F'},
-        {name: '指廊 G', type: 0, key: 'G'},
-        {name: '指廊 H', type: 0, key: 'H'},
-        {name: '值机岛 3A', type: 1, key: 'A'},
-        {name: '值机岛 3B', type: 1, key: 'B'},
-        {name: '值机岛 3C', type: 1, key: 'C'},
-        {name: '值机岛 3D', type: 1, key: 'D'},
-        {name: '值机岛 3E', type: 1, key: 'E'},
-        {name: '值机岛 3F', type: 1, key: 'F'},
-        {name: '值机岛 3G', type: 1, key: 'G'},
-        {name: '值机岛 3H', type: 1, key: 'H'},
-        {name: '值机岛 3J', type: 1, key: 'J'},
+        {name: '指廊 E', type: 0, key: 'E', loaded: false, src: AC3E},
+        {name: '指廊 F', type: 0, key: 'F', loaded: false, src: AC3F},
+        {name: '指廊 G', type: 0, key: 'G', loaded: false, src: AC3G},
+        {name: '指廊 H', type: 0, key: 'H', loaded: false, src: AC3H},
+        {name: '值机岛 3A', type: 1, key: 'A', loaded: false, src: T3A},
+        {name: '值机岛 3B', type: 1, key: 'B', loaded: false, src: T3B},
+        {name: '值机岛 3C', type: 1, key: 'C', loaded: false, src: T3C},
+        {name: '值机岛 3D', type: 1, key: 'D', loaded: false, src: T3D},
+        {name: '值机岛 3E', type: 1, key: 'E', loaded: false, src: T3E},
+        {name: '值机岛 3F', type: 1, key: 'F', loaded: false, src: T3F},
+        {name: '值机岛 3G', type: 1, key: 'G', loaded: false, src: T3G},
+        {name: '值机岛 3H', type: 1, key: 'H', loaded: false, src: T3H},
+        {name: '值机岛 3J', type: 1, key: 'J', loaded: false, src: T3J},
       ],
       admission: false,
       rotateAdmission: false,
@@ -193,8 +188,6 @@ export default {
         this.loading = 0;
         this.openList = false;
         return this.selected = null;
-      } else if (this.selected && this.selected.type === 1 && menu.type === 1) {
-        this.openList = true;
       }
 
       this.$nextTick(() => _defer(() => {
@@ -303,7 +296,6 @@ export default {
 
         const keys = Object.keys(comprehensiveData).sort();
 
-        // this.corridorList = [];
         for (let o of keys) {
           this.corridorList.push(comprehensiveData[o]);
         }
