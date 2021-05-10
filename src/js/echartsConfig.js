@@ -19,6 +19,11 @@ export default {
       textStyle: {color: '#ffffff'},
     },
   },
+  tooltip: {
+    trigger: 'axis',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderWidth: 0
+  },
   grid: {
     top: '15%',
     left: '5%',
@@ -28,6 +33,7 @@ export default {
   },
   series: [{
     // data: [2820, 3932, 5000, 4401, 3934, 2890, 3330, 2320, 4220, 4900, 4455],
+    name: '过检人数',
     type: 'line',
     smooth: true,
     lineStyle: {
