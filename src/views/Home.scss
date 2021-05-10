@@ -391,6 +391,35 @@
     .statistics {
       height: 430px;
     }
+
+    ::v-deep .echarts-tooltip {
+      background-color: rgba(#fff, .7) !important;
+      border-width: 0 !important;
+
+      * {
+        font-size: 20px !important;
+      }
+
+      > div > div > div:nth-of-type(2) > div > div {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between;
+
+        span {
+          float: none;
+          display: flex !important;
+          align-items: center;
+
+          &:first-child {
+            margin-right: 5px !important;
+          }
+
+          &:nth-of-type(3) {
+            margin-left: 20px !important;
+          }
+        }
+      }
+    }
   }
 
   .m2 {

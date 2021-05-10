@@ -21,8 +21,7 @@ export default {
   },
   tooltip: {
     trigger: 'axis',
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    borderWidth: 0
+    className: 'echarts-tooltip'
   },
   grid: {
     top: '15%',
