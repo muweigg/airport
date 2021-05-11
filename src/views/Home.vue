@@ -539,7 +539,7 @@ export default {
       if (!data) return;
 
       if (parseInt(data.retCode) === 0) {
-        this.check.checked = 0;
+        // this.check.checked = 0;
         let checked = 0;
         const result = data.retJSON.result;
         const sort = sortBy(result, [o => parseInt(o.time_quantum)]);
@@ -571,9 +571,9 @@ export default {
         result.boarded_num = parseInt(result.boarded_num || 0);
         result.waitfly_num = parseInt(result.waitfly_num || 0);
 
-        result.willboard_num = result.willboard_num < 0 ? 0 : result.willboard_num;
-        result.boarded_num = result.boarded_num < 0 ? 0 : result.boarded_num;
-        result.waitfly_num = result.waitfly_num < 0 ? 0 : result.waitfly_num;
+        result.willboard_num < 0 && (result.willboard_num = 0);
+        result.boarded_num < 0 && (result.boarded_num = 0);
+        result.waitfly_num < 0 && (result.waitfly_num = 0);
 
         this.board.total = new Decimal(result.willboard_num).add(result.boarded_num).add(result.boarded_num);
 
