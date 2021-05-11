@@ -117,8 +117,9 @@ import T2E from '@/assets/images/T2/2E.png';
 import T2F from '@/assets/images/T2/2F.png';
 
 import axios from '@/js/axios';
-import API_URL from "@/js/API_URL";
-import {format} from "date-fns";
+import API_URL from '@/js/API_URL';
+import {format} from 'date-fns';
+import {Decimal} from 'decimal.js';
 import {delay, defer as _defer} from 'lodash';
 import {defer, combineLatest} from 'rxjs';
 
@@ -237,7 +238,8 @@ export default {
               counter: o.area_info.substr(index),
               checkin_passengernum: o.checkin_passengernum
             }
-            this.statistics.passenger = Math.floor(this.statistics.passenger + (parseInt(o.checkin_passengernum) || 0));
+            // this.statistics.passenger = Math.floor(this.statistics.passenger + (parseInt(o.checkin_passengernum) || 0));
+            this.statistics.passenger = new Decimal(parseInt(o.checkin_passengernum || 0)).add(this.statistics.passenger);
           }
         }
 
@@ -248,8 +250,10 @@ export default {
               bag_count: o.bag_count,
               bag_weight: o.bag_weight,
             });
-            this.statistics.count = Math.floor(this.statistics.count + (parseInt(o.bag_count) || 0));
-            this.statistics.weight = Math.floor(this.statistics.weight + (parseInt(o.bag_weight) || 0));
+            // this.statistics.count = Math.floor(this.statistics.count + (parseInt(o.bag_count) || 0));
+            // this.statistics.weight = Math.floor(this.statistics.weight + (parseInt(o.bag_weight) || 0));
+            this.statistics.count = new Decimal(parseInt(o.bag_count || 0)).add(this.statistics.count);
+            this.statistics.weight = new Decimal(parseInt(o.bag_weight || 0)).add(this.statistics.weight);
           }
         }
 
@@ -276,7 +280,8 @@ export default {
             checkedin_num: o.checkedin_num
           }
 
-          this.statistics.checkedIn = Math.floor(this.statistics.checkedIn + (parseInt(o.checkedin_num) || 0));
+          // this.statistics.checkedIn = Math.floor(this.statistics.checkedIn + (parseInt(o.checkedin_num) || 0));
+          this.statistics.checkedIn = new Decimal(parseInt(o.checkedin_num || 0)).add(this.statistics.checkedIn);
         }
 
         for (let o of result2) {

@@ -173,7 +173,7 @@
             <strong>{{ board.willBoard }}</strong>
             <div class="wrap-limit">
               <img src="@/assets/images/check-in/1.png" alt=""
-                   :style="`height: ${board.willBoard / board.total * 2.4}rem;`">
+                   :style="`height: ${this.board.willBoard / this.board.total * 2.4}rem;`">
             </div>
             <div>待登机</div>
           </div>
@@ -181,7 +181,7 @@
             <strong>{{ board.boarded }}</strong>
             <div class="wrap-limit">
               <img src="@/assets/images/check-in/2.png" alt=""
-                   :style="`height: ${board.boarded / board.total * 2.4}rem;`">
+                   :style="`height: ${this.board.boarded / this.board.total * 2.4}rem;`">
             </div>
             <div>已登机</div>
           </div>
@@ -189,7 +189,7 @@
             <strong>{{ board.waitFly }}</strong>
             <div class="wrap-limit">
               <img src="@/assets/images/check-in/3.png" alt=""
-                   :style="`height: ${board.waitFly / board.total * 2.4}rem;`">
+                   :style="`height: ${this.board.waitFly / this.board.total * 2.4}rem;`">
             </div>
             <div>待飞</div>
           </div>
@@ -274,6 +274,7 @@ import axios from '@/js/axios';
 import API_URL from "@/js/API_URL";
 import config from '@/js/echartsConfig';
 import {sortBy} from 'lodash';
+import {Decimal} from "decimal.js";
 
 let cancelTokenSource;
 
@@ -327,6 +328,9 @@ export default {
         boarded: 0,
         waitFly: 0,
         total: 0,
+        willBoardHeight: 0,
+        boardedHeight: 0,
+        waitFlyHeight: 0
       },
       // 行李
       baggage: {
@@ -443,7 +447,7 @@ export default {
         };
 
         TweenLite.to(tmp, 2, {
-          total: parseInt(result.total_passengernum) / 10000,
+          total: new Decimal(result.total_passengernum).div(10000),
           snap: 'total',
           ease: Expo.easeOut,
           onUpdate: () => {
@@ -452,13 +456,13 @@ export default {
         });
 
         TweenLite.to(this.accumulative, 2, {
-          outbound: parseInt(result.departure_passengernum) / 10000,
+          outbound: new Decimal(result.departure_passengernum).div(10000),
           snap: 'outbound',
           ease: Expo.easeOut
         });
 
         TweenLite.to(this.accumulative, 2, {
-          inbound: parseInt(result.arrive_passengernum) / 10000,
+          inbound: new Decimal(result.arrive_passengernum).div(10000),
           snap: 'inbound',
           ease: Expo.easeOut
         });
@@ -487,7 +491,8 @@ export default {
 
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
-        const cussRate = Math.floor((result.cussrate || 0) * Math.pow(10, 4)) * Math.pow(10, -2);
+        // const cussRate = Math.floor((result.cussrate || 0) * Math.pow(10, 4)) * Math.pow(10, -2);
+        const cussRate = new Decimal(result.cussrate || 0).mul(100);
         this.checkIn.cussRate = Number(cussRate.toFixed(2));
         this.checkIn.today = result.all_checkinnum || 0;
       }
@@ -562,22 +567,30 @@ export default {
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
 
-        this.board.total = parseInt(result.willboard_num) + parseInt(result.boarded_num) + parseInt(result.waitfly_num);
+        result.willboard_num = parseInt(result.willboard_num || 0);
+        result.boarded_num = parseInt(result.boarded_num || 0);
+        result.waitfly_num = parseInt(result.waitfly_num || 0);
+
+        result.willboard_num = result.willboard_num < 0 ? 0 : result.willboard_num;
+        result.boarded_num = result.boarded_num < 0 ? 0 : result.boarded_num;
+        result.waitfly_num = result.waitfly_num < 0 ? 0 : result.waitfly_num;
+
+        this.board.total = new Decimal(result.willboard_num).add(result.boarded_num).add(result.boarded_num);
 
         TweenLite.to(this.board, 2, {
-          willBoard: parseInt(result.willboard_num) || 0,
+          willBoard: result.willboard_num,
           snap: 'willBoard',
           ease: Expo.easeOut
         });
 
         TweenLite.to(this.board, 2, {
-          boarded: parseInt(result.boarded_num) || 0,
+          boarded: result.boarded_num,
           snap: 'boarded',
           ease: Expo.easeOut
         });
 
         TweenLite.to(this.board, 2, {
-          waitFly: parseInt(result.waitfly_num) || 0,
+          waitFly: result.waitfly_num,
           snap: 'waitFly',
           ease: Expo.easeOut
         });
@@ -590,14 +603,14 @@ export default {
       if (parseInt(data.retCode) === 0) {
         const result = data.retJSON.result[0];
 
-
         TweenLite.to(this.baggage, 2, {
           checkNum: parseInt(result.bag_checknum) || 0,
           snap: 'checkNum',
           ease: Expo.easeOut
         });
 
-        const checkRate = Math.floor((result.bag_checkrate || 0) * Math.pow(10, 4)) * Math.pow(10, -2);
+        // const checkRate = Math.floor((result.bag_checkrate || 0) * Math.pow(10, 4)) * Math.pow(10, -2);
+        const checkRate = new Decimal(result.bag_checkrate || 0).mul(100);
         TweenLite.to(this.baggage, 2, {
           checkRate: Number(checkRate.toFixed(2)),
           ease: Expo.easeOut
