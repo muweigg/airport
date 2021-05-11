@@ -575,7 +575,7 @@ export default {
         result.boarded_num < 0 && (result.boarded_num = 0);
         result.waitfly_num < 0 && (result.waitfly_num = 0);
 
-        this.board.total = new Decimal(result.willboard_num).add(result.boarded_num).add(result.boarded_num);
+        this.board.total = new Decimal(result.willboard_num).add(result.boarded_num).add(result.waitfly_num);
 
         TweenLite.to(this.board, 2, {
           willBoard: result.willboard_num,
