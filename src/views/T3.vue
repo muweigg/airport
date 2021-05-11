@@ -68,15 +68,19 @@
           </div>
         </div>
         <transition-group name="fade">
-          <div class="total-wrap" v-show="corridorList.length > 0" key="corridorList">
+          <div class="total-wrap" v-show="corridorList.length > 0" key="corridorListCount">
             <div>
               待登机总人数：<span class="c2">{{ statistics.checkedIn || '-' }}</span>
             </div>
           </div>
-          <div class="total-wrap" v-show="counterList.length > 0" key="counterList">
+          <div class="total-wrap" v-show="counterList.length > 0" key="counterListCount">
             <div>值机总人数：<span class="c1">{{ statistics.passenger || '-' }}</span></div>
             <div>总件数：<span class="c2">{{ statistics.count || '-' }}</span></div>
-            <div>总重量：<span class="c3">{{ `${statistics.weight} KG` || '-' }}</span></div>
+            <div>总重量：<span class="c3">{{ statistics.weight ? `${statistics.weight} KG` : '-' }}</span></div>
+          </div>
+          <div class="bag-total-wrap" v-show="statistics.bagChecked > 0 || statistics.bagCheckRate > 0" key="counterBagCount">
+            <div>行李开包数：<span class="c2">{{ statistics.bagChecked || '-' }}</span></div>
+            <div>行李开包率：<span class="c3">{{ statistics.bagCheckRate ? `${statistics.bagCheckRate}%` : '-' }}</span></div>
           </div>
         </transition-group>
         <a href="javascript:" class="close" @click="openList = false">&#10005;</a>
@@ -123,7 +127,7 @@ import T3J from '@/assets/images/T3/3J.png';
 import axios from '@/js/axios';
 import API_URL from "@/js/API_URL";
 import {format} from "date-fns";
-import {delay, defer as _defer} from 'lodash';
+import {delay, defer as _defer, find} from 'lodash';
 import {defer, combineLatest} from 'rxjs';
 
 let cancelTokenSource = axios.CancelToken.source();
@@ -161,6 +165,8 @@ export default {
         passenger: 0,
         count: 0,
         weight: 0,
+        bagChecked: 0,
+        bagCheckRate: 0
       }
     }
   },
@@ -200,6 +206,8 @@ export default {
           passenger: 0,
           count: 0,
           weight: 0,
+          bagChecked: 0,
+          bagCheckRate: 0
         }
         this.initAllRequest();
         this.subscribeAllRequest();
@@ -217,6 +225,7 @@ export default {
         combineLatest(
             this.requestCounter(API_URL.PASSENGER_NUM_BY_LOCATION_DRILL_DOWN),
             this.requestCounter(API_URL.PSR_BAG_INFO_DRILL_DOWN),
+            this.requestCounter(API_URL.PSR_BAG_CHECKED_INFO_DRILL_DOWN, {level_flag: 1}),
         )
       ];
       this.subscribeable = requests[this.selected.type];
@@ -231,7 +240,7 @@ export default {
     unsubscribeAllRequest() {
       if (this.subscriptions) this.subscriptions.unsubscribe();
     },
-    responseHandlerCounter([data1, data2]) {
+    responseHandlerCounter([data1, data2, data3]) {
       if (!data1 || !data2) return;
 
       if (parseInt(data1.retCode) === 0 && parseInt(data2.retCode) === 0) {
@@ -258,6 +267,15 @@ export default {
             });
             this.statistics.count = Math.floor(this.statistics.count + (parseInt(o.bag_count) || 0));
             this.statistics.weight = Math.floor(this.statistics.weight + (parseInt(o.bag_weight) || 0));
+          }
+        }
+
+        if (parseInt(data3.retCode) === 0) {
+          const result3 = data3.retJSON.result;
+          const counter = find(result3, ['area_info', `3${this.selected.key}`])
+          if (counter) {
+            this.statistics.bagChecked = counter.bag_checknum;
+            this.statistics.bagCheckRate = Math.floor((counter.bag_checkrate || 0) * Math.pow(10, 4)) * Math.pow(10, -2);
           }
         }
 
@@ -303,13 +321,14 @@ export default {
 
       this.loading = 0;
     },
-    requestCounter(url) {
+    requestCounter(url, rewriteParams = {}) {
       return defer(() => {
-        const params = {
+        const defaultParams = {
           exec_date: format(new Date(), 'yyyyMMdd'),
           level_flag: 2,
           terminal_code: 'T3'
         }
+        const params = Object.assign({}, defaultParams, rewriteParams);
         return axios.get(url, {params, cancelToken: cancelTokenSource.token})
             .catch((thrown) => {
               this.loading = 0

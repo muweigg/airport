@@ -68,15 +68,15 @@
           </transition-group>
         </div>
         <transition-group name="fade-in">
-          <div class="total-wrap" v-show="corridorList.length > 0" key="corridorList">
+          <div class="total-wrap" v-show="corridorList.length > 0" key="corridorListCount">
             <div>
               待登机总人数：<span class="c2">{{ statistics.checkedIn || '-' }}</span>
             </div>
           </div>
-          <div class="total-wrap" v-show="counterList.length > 0" key="counterList">
+          <div class="total-wrap" v-show="counterList.length > 0" key="counterListCount">
             <div>值机总人数：<span class="c1">{{ statistics.passenger || '-' }}</span></div>
             <div>总件数：<span class="c2">{{ statistics.count || '-' }}</span></div>
-            <div>总重量：<span class="c3">{{ `${statistics.weight} KG` || '-' }}</span></div>
+            <div>总重量：<span class="c3">{{ statistics.weight ? `${statistics.weight} KG` : '-' }}</span></div>
           </div>
         </transition-group>
         <a href="javascript:" class="close" @click="openList = false">&#10005;</a>

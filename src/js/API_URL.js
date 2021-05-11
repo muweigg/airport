@@ -41,4 +41,8 @@ export default {
 
   // 2.14 登机口后续航班查询
   NEXT_FLIGHT_BY_CORRIDOR: '/bigdata/dm/huawei/v1/lky/next_flight_bycorridor/query',
+
+  // T3
+  // 2.11 开包数据统计——按地理位置下钻
+  PSR_BAG_CHECKED_INFO_DRILL_DOWN: '/bigdata/dm/huawei/v1/lky/psrBagCheckedInfoDrilldown/query',
 }

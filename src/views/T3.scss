@@ -101,7 +101,7 @@
       }
     }
 
-    .total-wrap {
+    .total-wrap, .bag-total-wrap {
       flex: none;
       display: flex;
       align-items: center;
@@ -113,6 +113,16 @@
       div {
         display: flex;
         align-items: center;
+      }
+    }
+
+    .bag-total-wrap {
+      justify-content: flex-start;
+
+      padding-top: 0;
+
+      div {
+        margin-right: 15px;
       }
     }
 
