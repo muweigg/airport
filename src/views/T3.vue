@@ -222,6 +222,7 @@ export default {
         combineLatest(
             this.requestCorridor(API_URL.GATE_FLIGHT_INFO),
             this.requestCorridor(API_URL.NEXT_FLIGHT_BY_CORRIDOR),
+            this.requestCorridor(API_URL.PSR_BOARD_INFO),
         ),
         combineLatest(
             this.requestCounter(API_URL.PASSENGER_NUM_BY_LOCATION_DRILL_DOWN),
