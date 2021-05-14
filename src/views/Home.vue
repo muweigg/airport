@@ -285,7 +285,7 @@ export default {
     return {
       admission: false,
       date: format(new Date(), 'yyyy-MM-dd'),
-      deadline: format(subDays(new Date(), 1), 'yyyy-MM-dd'),
+      deadline: format(subDays(new Date(), 2), 'yyyy-MM-dd'),
       time: format(new Date(), 'HH:mm:ss'),
       scene: 0,
       swiper: null,
@@ -402,7 +402,7 @@ export default {
     initAllRequestTimer() {
       this.subscribeable = [
         // 顶部统计
-        this.requestTimer(API_URL.PASSENGER_NUM_IN_YEAR, format(subDays(Date.now(), 1), 'yyyyMMdd')),
+        this.requestTimer(API_URL.PASSENGER_NUM_IN_YEAR, format(subDays(Date.now(), 2), 'yyyyMMdd')),
         // 订座
         this.requestTimer(API_URL.BOOKED_NUM, format(addDays(Date.now(), 1), 'yyyyMMdd')),
         // 值机

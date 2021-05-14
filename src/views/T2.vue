@@ -57,7 +57,7 @@
               <tr v-for="item in counterList">
                 <td>柜台: <span class="c1">{{ item.counter || '-' }}</span></td>
                 <td>人数: <span class="c1">{{ item.checkin_passengernum || '' }}</span></td>
-                <td>件数: <span class="c2">{{ item.bag_count || '-' }}</span></td>
+                <td>件数: <span class="c2">{{ parseInt(item.bag_count) || '-' }}</span></td>
                 <td>重量: <span class="c3">{{ item.bag_weight ? `${item.bag_weight} KG` : '-' }}</span></td>
               </tr>
               </tbody>
@@ -69,9 +69,8 @@
         </div>
         <transition-group name="fade-in">
           <div class="total-wrap" v-show="corridorList.length > 0" key="corridorListCount">
-            <div>
-              待登机总人数：<span class="c2">{{ statistics.checkedIn || '-' }}</span>
-            </div>
+            <div>已登机总人数：<span class="c1">{{ statistics.boarded || '-' }}</span></div>
+            <div>待登机总人数：<span class="c2">{{ statistics.willBoard || '-' }}</span></div>
           </div>
           <div class="total-wrap" v-show="counterList.length > 0" key="counterListCount">
             <div>值机总人数：<span class="c1">{{ statistics.passenger || '-' }}</span></div>
@@ -150,7 +149,8 @@ export default {
       counterList: [],
       loading: 0,
       statistics: {
-        checkedIn: 0,
+        willBoard: 0,
+        boarded: 0,
         passenger: 0,
         count: 0,
         weight: 0,
@@ -206,6 +206,7 @@ export default {
         combineLatest(
             this.requestCorridor(API_URL.GATE_FLIGHT_INFO),
             this.requestCorridor(API_URL.NEXT_FLIGHT_BY_CORRIDOR),
+            this.requestCorridor(API_URL.PSR_BOARD_INFO),
         ),
         combineLatest(
             this.requestCounter(API_URL.PASSENGER_NUM_BY_LOCATION_DRILL_DOWN),
@@ -244,14 +245,18 @@ export default {
         }
 
         for (let o of result2) {
-          // if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0)
-          if (comprehensiveData[o.area_info]) {
-            Object.assign(comprehensiveData[o.area_info], {
+          if (o.area_info && o.area_info.indexOf(this.selected.key) >= 0) {
+            // if (comprehensiveData[o.area_info]) {
+            //   Object.assign(comprehensiveData[o.area_info], {
+            //     bag_count: o.bag_count,
+            //     bag_weight: o.bag_weight,
+            //   });
+            const index = o.area_info.indexOf(this.selected.key) + 1;
+            comprehensiveData[o.area_info] = Object.assign({}, comprehensiveData[o.area_info], {
+              counter: o.area_info.substr(index),
               bag_count: o.bag_count,
               bag_weight: o.bag_weight,
             });
-            // this.statistics.count = Math.floor(this.statistics.count + (parseInt(o.bag_count) || 0));
-            // this.statistics.weight = Math.floor(this.statistics.weight + (parseInt(o.bag_weight) || 0));
             this.statistics.count = new Decimal(parseInt(o.bag_count || 0)).add(this.statistics.count);
             this.statistics.weight = new Decimal(parseInt(o.bag_weight || 0)).add(this.statistics.weight);
           }
@@ -266,7 +271,7 @@ export default {
 
       this.loading = 0;
     },
-    responseHandlerCorridor([data1, data2]) {
+    responseHandlerCorridor([data1, data2, data3]) {
       if (!data1 || !data2) return;
 
       if (parseInt(data1.retCode) === 0 && parseInt(data2.retCode) === 0) {
@@ -280,8 +285,7 @@ export default {
             checkedin_num: o.checkedin_num
           }
 
-          // this.statistics.checkedIn = Math.floor(this.statistics.checkedIn + (parseInt(o.checkedin_num) || 0));
-          this.statistics.checkedIn = new Decimal(parseInt(o.checkedin_num || 0)).add(this.statistics.checkedIn);
+          // this.statistics.checkedIn = new Decimal(parseInt(o.checkedin_num || 0)).add(this.statistics.checkedIn);
         }
 
         for (let o of result2) {
@@ -295,6 +299,12 @@ export default {
 
         for (let o of keys) {
           this.corridorList.push(comprehensiveData[o]);
+        }
+
+        if (parseInt(data3.retCode) === 0) {
+          const result3 = data3.retJSON.result[0];
+          this.statistics.willBoard = result3.willboard_num;
+          this.statistics.boarded = result3.boarded_num;
         }
       }
 

@@ -17,7 +17,7 @@ export default {
   // 安检
   PSR_CHECKED_INFO: '/bigdata/dm/huawei/v1/lky/psrCheckedInfo/query',
 
-  // 登机
+  // 登机 2.15 旅客登机数据统计
   PSR_BOARD_INFO: '/bigdata/dm/huawei/v1/lky/psrBoardInfo/query',
 
   // 行李
