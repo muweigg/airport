@@ -203,7 +203,8 @@ export default {
         this.counterList = [];
         this.selected = menu;
         this.statistics = {
-          checkedIn: 0,
+          willBoard: 0,
+          boarded: 0,
           passenger: 0,
           count: 0,
           weight: 0,
@@ -329,7 +330,7 @@ export default {
 
         if (parseInt(data3.retCode) === 0) {
           const result3 = data3.retJSON.result[0];
-          this.statistics.willboard = result3.willboard_num;
+          this.statistics.willBoard = result3.willboard_num;
           this.statistics.boarded = result3.boarded_num;
         }
       }

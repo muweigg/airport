@@ -189,7 +189,8 @@ export default {
         this.counterList = [];
         this.selected = menu;
         this.statistics = {
-          checkedIn: 0,
+          willBoard: 0,
+          boarded: 0,
           passenger: 0,
           count: 0,
           weight: 0,
